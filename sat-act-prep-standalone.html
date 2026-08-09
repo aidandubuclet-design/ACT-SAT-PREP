@@ -1,0 +1,1453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing Room — SAT / ACT Prep</title>
+<style>
+:root{
+  --ink:#1b2a4a;
+  --ink-soft:#3c4a6b;
+  --paper:#f6f3ea;
+  --paper-line:#e2ddc9;
+  --red:#b5402c;
+  --green:#2f6d4f;
+  --gold:#c99a3b;
+  --mono:'Courier New', Courier, monospace;
+  --serif:'Georgia', 'Iowan Old Style', serif;
+  --sans:-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    linear-gradient(var(--paper-line) 1px, transparent 1px);
+  background-size: 100% 32px;
+  color:var(--ink);
+  font-family:var(--sans);
+  min-height:100vh;
+}
+.wrap{max-width:840px;margin:0 auto;padding:28px 20px 80px;}
+header.top{
+  display:flex;justify-content:space-between;align-items:baseline;
+  border-bottom:3px solid var(--ink);
+  padding-bottom:12px;margin-bottom:24px;
+}
+header.top .brand{
+  font-family:var(--serif);font-size:26px;font-weight:700;letter-spacing:.3px;
+}
+header.top .brand small{
+  display:block;font-family:var(--mono);font-size:11px;font-weight:400;
+  letter-spacing:2px;color:var(--ink-soft);text-transform:uppercase;margin-top:2px;
+}
+.ticket{
+  font-family:var(--mono);font-size:12px;color:var(--ink-soft);text-align:right;
+}
+.card{
+  background:#fffdf7;border:1px solid var(--paper-line);
+  box-shadow:2px 2px 0 var(--paper-line);
+  border-radius:2px;padding:24px;margin-bottom:20px;
+}
+h1,h2,h3{font-family:var(--serif);margin-top:0;}
+h2.section-title{
+  font-size:15px;text-transform:uppercase;letter-spacing:1.5px;
+  color:var(--ink-soft);font-family:var(--mono);border-bottom:1px solid var(--paper-line);
+  padding-bottom:8px;margin-bottom:16px;
+}
+.testGrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+@media(max-width:600px){.testGrid{grid-template-columns:1fr;}}
+.testPick{
+  border:2px solid var(--ink);padding:20px;background:#fffdf7;
+}
+.testPick h3{margin:0 0 6px;font-size:20px;}
+.testPick p{margin:0;color:var(--ink-soft);font-size:13px;line-height:1.5;}
+.testPick .meta{
+  font-family:var(--mono);font-size:11px;color:var(--gold);margin-top:10px;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;
+}
+.modeRow{display:flex;gap:10px;flex-wrap:wrap;}
+.modeBtn{
+  flex:1;min-width:120px;font-family:var(--mono);font-size:11.5px;letter-spacing:.5px;
+  text-transform:uppercase;padding:11px 10px;cursor:pointer;border-radius:2px;text-align:center;
+  transition:transform .1s ease, box-shadow .1s ease;
+}
+.modeBtn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);}
+.modeBtn.tutor{background:#2c3f63;color:#fff;border:2px solid var(--ink);}
+.modeBtn.testmode{background:transparent;color:var(--ink);border:2px solid var(--ink);}
+.modePill{
+  display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  padding:3px 9px;border-radius:10px;border:1px solid var(--gold);color:var(--gold);margin-left:8px;
+}
+.hint{
+  font-family:var(--sans);font-size:13.5px;line-height:1.6;padding:12px 14px;margin-top:4px;margin-bottom:18px;
+  border-radius:2px;
+}
+.hint.wrong{background:#f6eae7;border-left:3px solid var(--red);color:var(--red);}
+.hint.right{background:#eaf3ee;border-left:3px solid var(--green);color:var(--green);}
+.hint .body{color:var(--ink-soft);margin-top:6px;font-weight:400;}
+.choice.locked{cursor:not-allowed;opacity:.55;}
+.troublePanel{margin-top:16px;}
+.trouble-tag-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--paper-line);font-size:13px;}
+.trouble-tag-row:last-child{border-bottom:none;}
+.trouble-rate{font-family:var(--mono);font-size:11px;color:var(--red);}
+.menuRow{display:flex;justify-content:space-between;margin-bottom:16px;}
+.menuBtn{
+  font-family:var(--mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+  background:transparent;border:1px solid var(--paper-line);color:var(--ink-soft);
+  padding:7px 12px;border-radius:2px;cursor:pointer;
+}
+.menuBtn:hover{border-color:var(--ink);color:var(--ink);}
+.menuBtn.restart:hover{border-color:var(--red);color:var(--red);}
+.resumeBar{
+  position:fixed;left:0;right:0;bottom:0;background:var(--ink);color:var(--paper);
+  padding:14px 20px;z-index:50;box-shadow:0 -2px 10px rgba(0,0,0,.2);
+}
+.resumeBar .inner{max-width:840px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.resumeBar .info{flex:1;min-width:180px;}
+.resumeBar .info .title{font-family:var(--serif);font-size:15px;margin-bottom:4px;}
+.resumeBar .info .sub{font-family:var(--mono);font-size:11px;color:#cfcabb;}
+.resumeTrack{height:6px;background:#3c4a6b;border-radius:3px;margin-top:6px;width:100%;max-width:260px;overflow:hidden;}
+.resumeFill{height:100%;background:var(--gold);}
+.resumeBar .btns{display:flex;gap:8px;flex-wrap:wrap;}
+.resumeBar button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.5px;text-transform:uppercase;
+  padding:9px 14px;border-radius:2px;cursor:pointer;border:1px solid var(--paper);
+}
+.resumeBar .btnResume{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+.resumeBar .btnRestart{background:transparent;color:var(--paper);}
+.resumeBar .btnDiscard{background:transparent;color:#cfcabb;border-color:#5a6789;}
+body.hasResumeBar .wrap{padding-bottom:110px;}
+.timerBadge{
+  position:fixed;top:16px;right:16px;z-index:70;
+  font-family:var(--mono);font-size:13px;font-weight:700;letter-spacing:.5px;
+  background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:14px;
+  box-shadow:2px 2px 0 var(--paper-line);
+}
+.timerBadge.timerLow{background:var(--red);}
+.timerBadge.timerOver{background:var(--red);}
+.timerSettings{margin-top:6px;}
+.timerSettings label{display:block;font-family:var(--sans);font-size:13px;color:var(--ink-soft);margin-bottom:8px;cursor:pointer;}
+.timerSettings .presetGroup{margin-left:22px;margin-top:6px;margin-bottom:10px;display:none;}
+.timerSettings .presetGroup.open{display:block;}
+.timerSettings .presetGroup label{font-size:12.5px;margin-bottom:6px;}
+.timerSettings input[type="number"]{
+  font-family:var(--mono);font-size:12.5px;width:70px;padding:4px 6px;
+  border:1px solid var(--paper-line);border-radius:2px;margin-left:6px;
+}
+button.primary{
+  font-family:var(--mono);font-size:13px;letter-spacing:1px;text-transform:uppercase;
+  background:var(--ink);color:var(--paper);border:none;padding:12px 22px;
+  cursor:pointer;border-radius:2px;
+}
+button.primary:hover{background:var(--ink-soft);}
+button.ghost{
+  font-family:var(--mono);font-size:12px;letter-spacing:1px;text-transform:uppercase;
+  background:transparent;color:var(--ink);border:1px solid var(--ink);padding:10px 18px;
+  cursor:pointer;border-radius:2px;
+}
+button.ghost:hover{background:var(--ink);color:var(--paper);}
+.progressRow{
+  display:flex;justify-content:space-between;align-items:center;
+  font-family:var(--mono);font-size:12px;color:var(--ink-soft);margin-bottom:18px;
+}
+.timer{font-weight:700;color:var(--ink);}
+.progbar{height:5px;background:var(--paper-line);width:100%;margin:4px 0 18px;}
+.progbar .fill{height:100%;background:var(--gold);transition:width .25s ease;}
+.qTag{
+  display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:1px;
+  text-transform:uppercase;color:#fff;background:var(--ink-soft);padding:3px 8px;
+  border-radius:10px;margin-bottom:12px;
+}
+.passage{
+  font-family:var(--serif);font-size:15px;line-height:1.7;background:#fbf9f2;
+  border-left:3px solid var(--gold);padding:14px 18px;margin-bottom:18px;
+  white-space:pre-wrap;
+}
+.qtext{font-size:16px;line-height:1.6;margin-bottom:16px;}
+.qtext .underline{text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px;}
+.choices{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;}
+.choice{
+  display:flex;align-items:center;gap:12px;padding:10px 14px;border:1px solid var(--paper-line);
+  cursor:pointer;background:#fffdf7;transition:border-color .12s ease, background .12s ease;
+}
+.choice:hover{border-color:var(--ink-soft);}
+.choice.selected{border-color:var(--ink);background:#efe9d8;}
+.bubble{
+  width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);flex:0 0 22px;
+  position:relative;
+}
+.bubble.filled::after{
+  content:'';position:absolute;inset:3px;border-radius:50%;background:var(--ink);
+}
+.choice.correct{border-color:var(--green);background:#eaf3ee;}
+.choice.correct .bubble{border-color:var(--green);}
+.choice.correct .bubble::after{background:var(--green);}
+.choice.incorrect{border-color:var(--red);background:#f6eae7;}
+.choice.incorrect .bubble{border-color:var(--red);}
+.choice.incorrect .bubble::after{background:var(--red);}
+.choiceLabel{font-family:var(--mono);font-weight:700;margin-right:2px;}
+.navRow{display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.explain{
+  font-family:var(--sans);font-size:13.5px;line-height:1.6;background:#fbf9f2;
+  border:1px dashed var(--paper-line);padding:12px 14px;margin-top:-6px;margin-bottom:20px;
+  color:var(--ink-soft);
+}
+.scoreBig{font-family:var(--serif);font-size:52px;font-weight:700;margin:0;}
+.scoreRow{display:flex;gap:28px;align-items:baseline;flex-wrap:wrap;margin-bottom:8px;}
+.skillBar{margin-bottom:14px;}
+.skillBar .lbl{
+  display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;
+  margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;
+}
+.skillTrack{height:10px;background:var(--paper-line);border-radius:5px;overflow:hidden;}
+.skillFill{height:100%;border-radius:5px;}
+.skillFill.weak{background:var(--red);}
+.skillFill.mid{background:var(--gold);}
+.skillFill.strong{background:var(--green);}
+.lesson{
+  border-left:3px solid var(--red);background:#fbf3f0;padding:14px 18px;margin-bottom:14px;
+}
+.lesson h4{margin:0 0 6px;font-family:var(--serif);font-size:16px;}
+.lesson p{margin:0;font-size:13.5px;line-height:1.6;color:var(--ink-soft);}
+.footerNote{font-family:var(--mono);font-size:11px;color:var(--ink-soft);text-align:center;margin-top:30px;}
+.tag-pill-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.pill{
+  font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:12px;
+  border:1px solid var(--ink-soft);color:var(--ink-soft);
+}
+.hidden{display:none !important;}
+a.linklike{color:var(--ink);text-decoration:underline;cursor:pointer;font-family:var(--mono);font-size:12px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">The Testing Room<small>Purdue Prep · Diagnostic Practice</small></div>
+    <div class="ticket" id="ticketBox">NO. 001<br>SEAT —</div>
+  </header>
+
+  <div id="app"></div>
+  <div class="footerNote">Original practice material written for this app — not sourced from official SAT/ACT test forms.<br>Your progress and trouble log are saved on this device/browser only.</div>
+</div>
+
+<script>
+/* ============================= DATA ============================= */
+
+const ACT_ENGLISH = [
+ {id:"e1",tag:"punctuation",prompt:"The museum's new exhibit, {u}which features artifacts from ancient Egypt opened{/u} last Friday to record crowds.",choices:["NO CHANGE","which features artifacts from ancient Egypt, opened","which features artifacts from ancient Egypt opened,","which features artifacts, from ancient Egypt, opened"],answer:1,explain:"The clause \"which features artifacts from ancient Egypt\" is nonessential and needs a comma on both sides — one after \"exhibit\" (already there) and one after \"Egypt\" before \"opened.\""},
+ {id:"e2",tag:"punctuation",prompt:"Marcus studied every night for a month{u}, he still felt{/u} nervous before the exam.",choices:["NO CHANGE","; he still felt","he still felt",", but, he still felt"],answer:1,explain:"Two independent clauses can't be joined with just a comma (comma splice). A semicolon correctly joins them."},
+ {id:"e3",tag:"punctuation",prompt:"Before leaving for the trip{u};{/u} Elena checked her passport, her tickets, and her phone charger.",choices:["NO CHANGE",",",". ","—"],answer:1,explain:"An introductory dependent clause is set off from the main clause with a comma, not a semicolon."},
+ {id:"e4",tag:"sentence-structure",prompt:"Walking quickly through the rain, {u}the umbrella was left behind by Sarah{/u}.",choices:["NO CHANGE","the umbrella was left behind by Sarah while walking quickly through the rain","Sarah left the umbrella behind while walking quickly through the rain","an umbrella was left behind, walking quickly through the rain, by Sarah"],answer:2,explain:"The introductory phrase \"Walking quickly through the rain\" needs to modify a person, not \"the umbrella.\" Only choice C puts Sarah right after the comma."},
+ {id:"e5",tag:"sentence-structure",prompt:"{u}Because the bridge was under construction.{/u} Commuters had to take a longer route to reach downtown.",choices:["NO CHANGE","Because the bridge was under construction, commuters","Because the bridge was under construction commuters","Because the bridge was under construction; commuters"],answer:1,explain:"\"Because the bridge was under construction\" is a dependent clause and can't stand alone as a sentence — it must be joined to the main clause with a comma."},
+ {id:"e6",tag:"sentence-structure",prompt:"The committee reviewed dozens of applications, {u}choosing finally three finalists{/u} for the scholarship.",choices:["NO CHANGE","choosing three finalists finally","finally choosing three finalists","three finalists were finally chosen"],answer:2,explain:"\"Finally\" reads most naturally placed before the verb it modifies: \"finally choosing.\" This also keeps the sentence's structure parallel and active."},
+ {id:"e7",tag:"agreement",prompt:"Neither of the twins {u}have finished{/u} their science project yet.",choices:["NO CHANGE","has finished","having finished","finish"],answer:1,explain:"\"Neither\" is a singular subject, so it takes the singular verb \"has finished.\""},
+ {id:"e8",tag:"agreement",prompt:"Each of the employees {u}are required{/u} to submit their timesheet by Friday.",choices:["NO CHANGE","is required","were required","have been required"],answer:1,explain:"\"Each\" is singular, so the verb must be \"is required,\" not \"are required.\""},
+ {id:"e9",tag:"agreement",prompt:"The team of scientists {u}were confident{/u} that their data supported the hypothesis.",choices:["NO CHANGE","was confident","is confident","had been confident, was"],answer:1,explain:"\"Team\" is a collective noun acting as a single unit here, so it takes the singular verb \"was confident.\""},
+ {id:"e10",tag:"transitions",prompt:"The new policy reduced paperwork significantly. {u}However{/u}, employees reported spending more time on customer service.",choices:["NO CHANGE","As a result","In addition","For example"],answer:1,explain:"Freed-up time from less paperwork being spent on customer service is a consequence, not a contrast — \"As a result\" fits the logic better than \"However.\""},
+ {id:"e11",tag:"transitions",prompt:"Sales dropped in the first quarter. {u}Nonetheless{/u}, the company doubled its marketing budget for the second quarter.",choices:["NO CHANGE","Consequently","Similarly","For instance"],answer:1,explain:"Doubling the marketing budget is a direct response to the sales drop, so \"Consequently\" (cause and effect) fits better than a contrast word."},
+ {id:"e12",tag:"transitions",prompt:"The lecture covered the causes of the French Revolution in detail. {u}Similarly{/u}, it barely touched on its long-term effects on European monarchies.",choices:["NO CHANGE","Moreover","However","Therefore"],answer:2,explain:"\"In detail\" versus \"barely touched on\" is a contrast, so \"However\" is the logical transition."},
+ {id:"e13",tag:"punctuation",prompt:"The recipe calls for three ingredients{u}: flour, sugar and butter{/u}.",choices:["NO CHANGE","; flour, sugar, and butter","flour, sugar, and butter","flour sugar and butter"],answer:0,explain:"A colon correctly introduces the list that follows \"three ingredients.\" NO CHANGE is correct as written."},
+ {id:"e14",tag:"punctuation",prompt:"Dr. Alvarez, {u}who has taught biology for over twenty years{/u} recently published a textbook on marine ecosystems.",choices:["NO CHANGE","who has taught biology for over twenty years,","who has taught biology, for over twenty years,","whom has taught biology for over twenty years,"],answer:1,explain:"The nonessential clause describing Dr. Alvarez needs a closing comma before \"recently.\""},
+ {id:"e15",tag:"punctuation",prompt:"The hikers packed extra water{u}, they knew the trail offered no shade{/u}.",choices:["NO CHANGE","because they knew the trail offered no shade","they knew, the trail offered no shade","; they, knew the trail offered no shade"],answer:1,explain:"The original is a comma splice joining two independent clauses. Adding \"because\" turns the second clause into a dependent clause, correctly connected without a comma splice."},
+ {id:"e16",tag:"sentence-structure",prompt:"{u}Having finished the marathon in record time.{/u} Priya collapsed onto the grass, exhausted but proud.",choices:["NO CHANGE","Having finished the marathon in record time,","Finishing the marathon, in record time,","Having finished, the marathon in record time,"],answer:1,explain:"The introductory participial phrase is a fragment as written; a comma correctly joins it to the main clause about Priya."},
+ {id:"e17",tag:"sentence-structure",prompt:"Trying to fix the leak quickly, {u}the wrench slipped from the plumber's hand{/u}.",choices:["NO CHANGE","the plumber's wrench slipped from his hand","the plumber's hand let the wrench slip","the plumber dropped the wrench from his hand"],answer:3,explain:"The opening phrase \"Trying to fix the leak quickly\" must modify a person, not \"the wrench.\" Only this choice puts the plumber, the one doing the trying, as the subject performing the action."},
+ {id:"e18",tag:"sentence-structure",prompt:"The report was thorough. {u}Additionally covering every department's budget in detail.{/u}",choices:["NO CHANGE","additionally covering every department's budget in detail.","and it covered every department's budget in detail.","covering, additionally, every department's budget in detail."],answer:2,explain:"The second sentence is a fragment. Joining it to the first with \"and it covered\" creates a complete, properly connected sentence."},
+ {id:"e19",tag:"agreement",prompt:"Everyone on the team {u}were given{/u} a personalized training plan before the season began.",choices:["NO CHANGE","was given","have been given","are given"],answer:1,explain:"\"Everyone\" is grammatically singular, so it takes the singular verb \"was given.\""},
+ {id:"e20",tag:"agreement",prompt:"The number of applicants {u}have increased{/u} sharply since the position was advertised online.",choices:["NO CHANGE","has increased","were increasing","increase"],answer:1,explain:"\"The number\" (as opposed to \"a number\") is treated as singular, so it takes \"has increased.\""},
+ {id:"e21",tag:"agreement",prompt:"Either the manager or the assistants {u}is responsible{/u} for locking up each night.",choices:["NO CHANGE","are responsible","was responsible","responsible"],answer:1,explain:"With \"either/or,\" the verb agrees with the noun closer to it — \"assistants,\" which is plural, so \"are responsible\" is correct."},
+ {id:"e22",tag:"transitions",prompt:"The city council approved the new park's budget unanimously. {u}For example{/u}, construction is expected to begin within the month.",choices:["NO CHANGE","As a result,","In contrast,","On the other hand,"],answer:1,explain:"Construction beginning soon is a direct consequence of budget approval, so \"As a result\" is the logical transition, not \"For example.\""},
+ {id:"e23",tag:"transitions",prompt:"The vaccine proved highly effective in early trials. {u}Nevertheless{/u}, researchers moved quickly into the next phase of testing.",choices:["NO CHANGE","Consequently,","Meanwhile,","In contrast,"],answer:1,explain:"Moving quickly to the next phase follows logically from strong early results, so \"Consequently\" fits better than a contrast word."}
+];
+
+const ACT_MATH = [
+ {id:"am1",tag:"algebra",prompt:"Solve for x: 3x + 1 = 19",choices:["6", "7", "5", "8"],answer:0,explain:"3x = 19 - 1 = 18, so x = 18/3 = 6."},
+ {id:"am2",tag:"algebra",prompt:"Solve for x: 5x + 4 = 24",choices:["4", "5", "3", "6"],answer:0,explain:"5x = 24 - 4 = 20, so x = 20/5 = 4."},
+ {id:"am3",tag:"algebra",prompt:"Solve for x: 3x + 11 = 41",choices:["10", "11", "9", "12"],answer:0,explain:"3x = 41 - 11 = 30, so x = 30/3 = 10."},
+ {id:"am4",tag:"algebra",prompt:"Solve for x: 3x + 10 = 34",choices:["8", "9", "7", "10"],answer:0,explain:"3x = 34 - 10 = 24, so x = 24/3 = 8."},
+ {id:"am5",tag:"algebra",prompt:"Solve for x: 2x + 1 = 7",choices:["3", "4", "2", "5"],answer:0,explain:"2x = 7 - 1 = 6, so x = 6/2 = 3."},
+ {id:"am6",tag:"algebra",prompt:"Solve for x: 5x + 4 = 54",choices:["10", "11", "9", "12"],answer:0,explain:"5x = 54 - 4 = 50, so x = 50/5 = 10."},
+ {id:"am7",tag:"algebra",prompt:"Solve for x: 2x + 9 = 19",choices:["5", "6", "4", "7"],answer:0,explain:"2x = 19 - 9 = 10, so x = 10/2 = 5."},
+ {id:"am8",tag:"algebra",prompt:"Solve for x: 8x + 4 = 76",choices:["9", "10", "8", "11"],answer:0,explain:"8x = 76 - 4 = 72, so x = 72/8 = 9."},
+ {id:"am9",tag:"algebra",prompt:"Solve for x: 6x + 1 = 25",choices:["4", "5", "3", "6"],answer:0,explain:"6x = 25 - 1 = 24, so x = 24/6 = 4."},
+ {id:"am10",tag:"algebra",prompt:"Solve for x: 8x + 6 = 54",choices:["6", "7", "5", "8"],answer:0,explain:"8x = 54 - 6 = 48, so x = 48/8 = 6."},
+ {id:"am11",tag:"algebra",prompt:"Solve for x: 4x + 4 = 32",choices:["7", "8", "6", "9"],answer:0,explain:"4x = 32 - 4 = 28, so x = 28/4 = 7."},
+ {id:"am12",tag:"algebra",prompt:"Solve for x: 3x + 2 = 26",choices:["8", "9", "7", "10"],answer:0,explain:"3x = 26 - 2 = 24, so x = 24/3 = 8."},
+ {id:"am13",tag:"algebra",prompt:"Solve for x: 3x + 6 = 27",choices:["7", "8", "6", "9"],answer:0,explain:"3x = 27 - 6 = 21, so x = 21/3 = 7."},
+ {id:"am14",tag:"algebra",prompt:"Solve for x: 6x + 1 = 55",choices:["9", "10", "8", "11"],answer:0,explain:"6x = 55 - 1 = 54, so x = 54/6 = 9."},
+ {id:"am15",tag:"algebra",prompt:"Solve for x: 3x + 7 = 16",choices:["3", "4", "2", "5"],answer:0,explain:"3x = 16 - 7 = 9, so x = 9/3 = 3."},
+ {id:"am116",tag:"geometry",prompt:"A right triangle has legs of length 3 and 4. What is the length of the hypotenuse?",choices:["5", "7", "3", "9"],answer:0,explain:"3-4-5 is a Pythagorean triple, so the hypotenuse is 5."},
+ {id:"am117",tag:"geometry",prompt:"A right triangle has legs of length 6 and 8. What is the length of the hypotenuse?",choices:["10", "12", "8", "14"],answer:0,explain:"6-8-10 is a Pythagorean triple, so the hypotenuse is 10."},
+ {id:"am118",tag:"geometry",prompt:"A right triangle has legs of length 5 and 12. What is the length of the hypotenuse?",choices:["13", "15", "11", "17"],answer:0,explain:"5-12-13 is a Pythagorean triple, so the hypotenuse is 13."},
+ {id:"am119",tag:"geometry",prompt:"A right triangle has legs of length 9 and 12. What is the length of the hypotenuse?",choices:["15", "17", "13", "19"],answer:0,explain:"9-12-15 is a Pythagorean triple, so the hypotenuse is 15."},
+ {id:"am120",tag:"geometry",prompt:"A right triangle has legs of length 8 and 15. What is the length of the hypotenuse?",choices:["17", "19", "15", "21"],answer:0,explain:"8-15-17 is a Pythagorean triple, so the hypotenuse is 17."},
+ {id:"am121",tag:"geometry",prompt:"A right triangle has legs of length 7 and 24. What is the length of the hypotenuse?",choices:["25", "27", "23", "29"],answer:0,explain:"7-24-25 is a Pythagorean triple, so the hypotenuse is 25."},
+ {id:"am122",tag:"geometry",prompt:"A right triangle has legs of length 20 and 21. What is the length of the hypotenuse?",choices:["29", "31", "27", "33"],answer:0,explain:"20-21-29 is a Pythagorean triple, so the hypotenuse is 29."},
+ {id:"am123",tag:"geometry",prompt:"A right triangle has legs of length 9 and 40. What is the length of the hypotenuse?",choices:["41", "43", "39", "45"],answer:0,explain:"9-40-41 is a Pythagorean triple, so the hypotenuse is 41."},
+ {id:"am224",tag:"geometry",prompt:"The area of a circle is 121π. What is its circumference?",choices:["22π", "24π", "20π", "11π"],answer:0,explain:"Area = πr² = 121π → r = 11. Circumference = 2πr = 22π."},
+ {id:"am225",tag:"geometry",prompt:"The area of a circle is 49π. What is its circumference?",choices:["14π", "16π", "12π", "7π"],answer:0,explain:"Area = πr² = 49π → r = 7. Circumference = 2πr = 14π."},
+ {id:"am226",tag:"geometry",prompt:"The area of a circle is 144π. What is its circumference?",choices:["24π", "26π", "22π", "12π"],answer:0,explain:"Area = πr² = 144π → r = 12. Circumference = 2πr = 24π."},
+ {id:"am227",tag:"geometry",prompt:"The area of a circle is 64π. What is its circumference?",choices:["16π", "18π", "14π", "8π"],answer:0,explain:"Area = πr² = 64π → r = 8. Circumference = 2πr = 16π."},
+ {id:"am228",tag:"geometry",prompt:"The area of a circle is 144π. What is its circumference?",choices:["24π", "26π", "22π", "12π"],answer:0,explain:"Area = πr² = 144π → r = 12. Circumference = 2πr = 24π."},
+ {id:"am229",tag:"geometry",prompt:"The area of a circle is 36π. What is its circumference?",choices:["12π", "14π", "10π", "6π"],answer:0,explain:"Area = πr² = 36π → r = 6. Circumference = 2πr = 12π."},
+ {id:"am230",tag:"geometry",prompt:"The area of a circle is 16π. What is its circumference?",choices:["8π", "10π", "6π", "4π"],answer:0,explain:"Area = πr² = 16π → r = 4. Circumference = 2πr = 8π."},
+ {id:"am331",tag:"functions",prompt:"If f(x) = 1x² + 6x + 4, what is f(0)?",choices:["4", "6", "2", "8"],answer:0,explain:"f(0) = 1(0)² + 6(0) + 4 = 0 + 0 + 4 = 4."},
+ {id:"am332",tag:"functions",prompt:"If f(x) = 1x² + 2x + 2, what is f(2)?",choices:["10", "12", "8", "14"],answer:0,explain:"f(2) = 1(2)² + 2(2) + 2 = 4 + 4 + 2 = 10."},
+ {id:"am333",tag:"functions",prompt:"If f(x) = 3x² + 4x + 6, what is f(-2)?",choices:["10", "12", "8", "14"],answer:0,explain:"f(-2) = 3(-2)² + 4(-2) + 6 = 12 + -8 + 6 = 10."},
+ {id:"am334",tag:"functions",prompt:"If f(x) = 3x² + 3x + 4, what is f(0)?",choices:["4", "6", "2", "8"],answer:0,explain:"f(0) = 3(0)² + 3(0) + 4 = 0 + 0 + 4 = 4."},
+ {id:"am335",tag:"functions",prompt:"If f(x) = 1x² + 5x + 3, what is f(4)?",choices:["39", "41", "37", "43"],answer:0,explain:"f(4) = 1(4)² + 5(4) + 3 = 16 + 20 + 3 = 39."},
+ {id:"am336",tag:"functions",prompt:"If f(x) = 2x² + 2x + 8, what is f(2)?",choices:["20", "22", "18", "24"],answer:0,explain:"f(2) = 2(2)² + 2(2) + 8 = 8 + 4 + 8 = 20."},
+ {id:"am337",tag:"functions",prompt:"If f(x) = 3x² + 6x + 9, what is f(-1)?",choices:["6", "8", "4", "10"],answer:0,explain:"f(-1) = 3(-1)² + 6(-1) + 9 = 3 + -6 + 9 = 6."},
+ {id:"am338",tag:"functions",prompt:"If f(x) = 3x² + 1x + 4, what is f(-4)?",choices:["48", "50", "46", "52"],answer:0,explain:"f(-4) = 3(-4)² + 1(-4) + 4 = 48 + -4 + 4 = 48."},
+ {id:"am339",tag:"functions",prompt:"If f(x) = 3x² + 4x + 5, what is f(-3)?",choices:["20", "22", "18", "24"],answer:0,explain:"f(-3) = 3(-3)² + 4(-3) + 5 = 27 + -12 + 5 = 20."},
+ {id:"am340",tag:"functions",prompt:"If f(x) = 2x² + 5x + 6, what is f(-1)?",choices:["3", "5", "1", "7"],answer:0,explain:"f(-1) = 2(-1)² + 5(-1) + 6 = 2 + -5 + 6 = 3."},
+ {id:"am341",tag:"functions",prompt:"If f(x) = 4x² + 4x + 8, what is f(-2)?",choices:["16", "18", "14", "20"],answer:0,explain:"f(-2) = 4(-2)² + 4(-2) + 8 = 16 + -8 + 8 = 16."},
+ {id:"am342",tag:"functions",prompt:"If f(x) = 3x² + 2x + 4, what is f(4)?",choices:["60", "62", "58", "64"],answer:0,explain:"f(4) = 3(4)² + 2(4) + 4 = 48 + 8 + 4 = 60."},
+ {id:"am343",tag:"functions",prompt:"If f(x) = 3x² + 6x + 10, what is f(2)?",choices:["34", "36", "32", "38"],answer:0,explain:"f(2) = 3(2)² + 6(2) + 10 = 12 + 12 + 10 = 34."},
+ {id:"am344",tag:"functions",prompt:"If f(x) = 4x² + 3x + 4, what is f(-2)?",choices:["14", "16", "12", "18"],answer:0,explain:"f(-2) = 4(-2)² + 3(-2) + 4 = 16 + -6 + 4 = 14."},
+ {id:"am345",tag:"functions",prompt:"If f(x) = 4x² + 1x + 1, what is f(-3)?",choices:["34", "36", "32", "38"],answer:0,explain:"f(-3) = 4(-3)² + 1(-3) + 1 = 36 + -3 + 1 = 34."},
+ {id:"am446",tag:"stats",prompt:"A bag contains 3 red marbles out of 12 total marbles. What is the probability of drawing a red marble, in lowest terms?",choices:["1/4", "3/12", "3/4", "1/5"],answer:0,explain:"3/12 simplifies to 1/4."},
+ {id:"am447",tag:"stats",prompt:"A bag contains 3 blue marbles out of 20 total marbles. What is the probability of drawing a blue marble, in lowest terms?",choices:["3/20", "4/20", "17/20", "3/21"],answer:0,explain:"3/20 simplifies to 3/20."},
+ {id:"am448",tag:"stats",prompt:"A bag contains 8 green marbles out of 20 total marbles. What is the probability of drawing a green marble, in lowest terms?",choices:["2/5", "8/20", "3/5", "2/6"],answer:0,explain:"8/20 simplifies to 2/5."},
+ {id:"am449",tag:"stats",prompt:"A bag contains 9 yellow marbles out of 25 total marbles. What is the probability of drawing a yellow marble, in lowest terms?",choices:["9/25", "10/25", "16/25", "9/26"],answer:0,explain:"9/25 simplifies to 9/25."},
+ {id:"am450",tag:"stats",prompt:"A bag contains 6 red marbles out of 25 total marbles. What is the probability of drawing a red marble, in lowest terms?",choices:["6/25", "7/25", "19/25", "6/26"],answer:0,explain:"6/25 simplifies to 6/25."},
+ {id:"am451",tag:"stats",prompt:"A bag contains 2 blue marbles out of 25 total marbles. What is the probability of drawing a blue marble, in lowest terms?",choices:["2/25", "3/25", "23/25", "2/26"],answer:0,explain:"2/25 simplifies to 2/25."},
+ {id:"am452",tag:"stats",prompt:"A bag contains 4 green marbles out of 10 total marbles. What is the probability of drawing a green marble, in lowest terms?",choices:["2/5", "4/10", "3/5", "2/6"],answer:0,explain:"4/10 simplifies to 2/5."},
+ {id:"am453",tag:"stats",prompt:"A bag contains 2 yellow marbles out of 15 total marbles. What is the probability of drawing a yellow marble, in lowest terms?",choices:["2/15", "3/15", "13/15", "2/16"],answer:0,explain:"2/15 simplifies to 2/15."},
+ {id:"am554",tag:"stats",prompt:"The mean of five numbers is 18. If four of the numbers are 19, 23, 15, and 24, what is the fifth number?",choices:["11", "12", "10", "13"],answer:0,explain:"Sum must be 90. 19+23+15+24 = 81, so the fifth number is 9."},
+ {id:"am555",tag:"stats",prompt:"The mean of five numbers is 19. If four of the numbers are 18, 26, 15, and 26, what is the fifth number?",choices:["10", "11", "9", "12"],answer:0,explain:"Sum must be 95. 18+26+15+26 = 85, so the fifth number is 10."},
+ {id:"am556",tag:"stats",prompt:"The mean of five numbers is 24. If four of the numbers are 30, 19, 30, and 26, what is the fifth number?",choices:["15", "16", "14", "17"],answer:0,explain:"Sum must be 120. 30+19+30+26 = 105, so the fifth number is 15."},
+ {id:"am557",tag:"stats",prompt:"The mean of five numbers is 23. If four of the numbers are 16, 14, 21, and 15, what is the fifth number?",choices:["49", "50", "48", "51"],answer:0,explain:"Sum must be 115. 16+14+21+15 = 66, so the fifth number is 49."},
+ {id:"am558",tag:"stats",prompt:"The mean of five numbers is 22. If four of the numbers are 26, 10, 29, and 20, what is the fifth number?",choices:["25", "26", "24", "27"],answer:0,explain:"Sum must be 110. 26+10+29+20 = 85, so the fifth number is 25."},
+ {id:"am559",tag:"stats",prompt:"The mean of five numbers is 18. If four of the numbers are 10, 13, 21, and 19, what is the fifth number?",choices:["27", "28", "26", "29"],answer:0,explain:"Sum must be 90. 10+13+21+19 = 63, so the fifth number is 27."},
+ {id:"am560",tag:"stats",prompt:"The mean of five numbers is 16. If four of the numbers are 11, 17, 28, and 12, what is the fifth number?",choices:["12", "13", "11", "14"],answer:0,explain:"Sum must be 80. 11+17+28+12 = 68, so the fifth number is 12."}
+];
+
+const ACT_READING_PASSAGE = `Wildlife biologists once assumed that coyotes would retreat as cities expanded, but the opposite has happened. Over the past two decades, coyote populations have grown steadily within dense urban areas, from cemetery greenways to golf courses to the narrow strips of vegetation along highway overpasses. Researchers tracking radio-collared animals in one major metropolitan area found that urban coyotes had shifted almost entirely to a nocturnal schedule, a change rarely seen in their rural counterparts, who remain active at dawn and dusk.
+
+This shift appears to be a direct response to human activity rather than an inherited trait. Coyotes born and raised in the city show the nocturnal pattern most strongly, while coyotes that migrate in from surrounding rural areas gradually adjust their schedules over several months. The behavioral flexibility surprised even veteran researchers, who had expected a slower, generational change rather than adjustment within a single animal's lifetime.
+
+Just as striking is the change in diet. Urban coyotes rely far less on human garbage than popular assumption suggests; stomach-content studies show that rodents, rabbits, and fruit still make up the bulk of their meals. The willingness of coyotes to den quietly in small, overlooked green spaces, combined with this dietary flexibility, may explain why they have thrived where other, more specialized predators have disappeared.`;
+
+const ACT_READING = [
+ {id:"r1",tag:"main-idea",passage:ACT_READING_PASSAGE,prompt:"Which choice best states the main idea of the passage?",choices:["Coyotes have replaced other predators in most American cities.","Coyotes have adapted their behavior, rather than being forced out, as cities have grown.","Urban coyotes survive mainly by eating human garbage.","Rural coyotes are adjusting their schedules to match urban coyotes."],answer:1,explain:"The passage centers on behavioral adaptation (nocturnal schedules, diet) as the reason coyotes have thrived in cities, not disappeared."},
+ {id:"r2",tag:"main-idea",passage:ACT_READING_PASSAGE,prompt:"The passage's discussion of diet primarily serves to:",choices:["contradict the claim that coyotes are behaviorally flexible.","support the idea that coyote success in cities comes from adaptability, not garbage-eating.","argue that coyotes should be relocated away from cities.","explain why coyotes prefer rural habitats."],answer:1,explain:"The diet paragraph reinforces the passage's broader point that adaptability, not scavenging, explains coyote success."},
+ {id:"r3",tag:"inference",passage:ACT_READING_PASSAGE,prompt:"It can reasonably be inferred that researchers were surprised because they expected behavioral changes like the shift to nocturnal activity to:",choices:["never occur in coyotes.","happen only through many generations, not within one animal's life.","happen faster in rural coyotes than urban ones.","be caused mainly by diet rather than human activity."],answer:1,explain:"The passage says researchers 'expected a slower, generational change rather than adjustment within a single animal's lifetime.'"},
+ {id:"r4",tag:"inference",passage:ACT_READING_PASSAGE,prompt:"Based on the passage, a coyote that recently migrated from a rural area into a city would most likely:",choices:["immediately become fully nocturnal.","take several months to gradually shift its activity schedule.","remain active only at dawn and dusk permanently.","move back to a rural area within weeks."],answer:1,explain:"The passage states migrating coyotes 'gradually adjust their schedules over several months.'"},
+ {id:"r5",tag:"detail",passage:ACT_READING_PASSAGE,prompt:"According to the passage, where have coyotes been found living within cities?",choices:["Only in large public parks.","Cemetery greenways, golf courses, and highway overpass vegetation.","Abandoned buildings and parking garages.","Zoos and wildlife sanctuaries."],answer:1,explain:"The first paragraph specifically lists these three locations."},
+ {id:"r6",tag:"detail",passage:ACT_READING_PASSAGE,prompt:"According to stomach-content studies mentioned in the passage, what makes up the bulk of an urban coyote's diet?",choices:["Human garbage","Rodents, rabbits, and fruit","Domestic pets","Insects and seeds"],answer:1,explain:"The third paragraph states stomach-content studies show rodents, rabbits, and fruit make up most of the diet."},
+ {id:"r7",tag:"vocab",passage:ACT_READING_PASSAGE,prompt:"As used in the passage, \"specialized\" (final paragraph) most nearly means:",choices:["adapted to a narrow set of conditions.","trained by scientists.","dangerous to humans.","rare in number."],answer:0,explain:"In context, 'more specialized predators' are contrasted with adaptable coyotes — meaning predators suited to narrower, specific conditions."},
+ {id:"r8",tag:"vocab",passage:ACT_READING_PASSAGE,prompt:"As used in the passage, \"flexibility\" (second paragraph) most nearly means:",choices:["physical agility in movement.","willingness or ability to change behavior.","a legal loophole.","a scheduling conflict."],answer:1,explain:"The passage uses 'behavioral flexibility' to describe coyotes' ability to change their activity patterns — an adaptability, not a physical trait."}
+];
+
+const ACT_READING_PASSAGE_B = `Ornithologists have documented a growing number of migratory songbirds altering their flight paths to avoid brightly lit city centers. Some species now detour around downtown skylines entirely, adding miles to already exhausting journeys. Researchers suspect the birds are responding less to the light itself than to the disorientation it causes with celestial navigation cues they rely on at night.`;
+const ACT_READING_B = [
+ {id:"rb1",tag:"main-idea",passage:ACT_READING_PASSAGE_B,prompt:"The main idea of this passage is that migratory songbirds:",choices:["have stopped migrating at night entirely.","are changing their routes because city lights interfere with navigation.","prefer city centers for resting during migration.","are declining in number due to light pollution."],answer:1,explain:"The passage centers on birds detouring around cities because of light-caused disorientation."},
+ {id:"rb2",tag:"inference",passage:ACT_READING_PASSAGE_B,prompt:"It can be inferred that the added distance from detouring around cities:",choices:["has no effect on the birds.","makes an already demanding migration more difficult.","shortens the overall migration.","only affects birds that migrate during the day."],answer:1,explain:"The passage notes the detours are 'adding miles to already exhausting journeys.'"},
+ {id:"rb3",tag:"detail",passage:ACT_READING_PASSAGE_B,prompt:"According to the passage, what do researchers believe birds primarily react to?",choices:["The brightness of the light itself","Disorientation of celestial navigation cues","Noise pollution from cities","Air pollution over cities"],answer:1,explain:"The passage says researchers suspect it's the disorientation of navigation cues, not the light itself."},
+ {id:"rb4",tag:"vocab",passage:ACT_READING_PASSAGE_B,prompt:"As used in the passage, \"celestial\" most nearly means:",choices:["related to the sky or stars.","related to underground paths.","artificial or man-made.","related to ocean currents."],answer:0,explain:"'Celestial navigation cues' refers to cues from the sky, like stars, used for orientation."}
+];
+
+const ACT_READING_PASSAGE_C = `When a small regional library replaced its card catalog with a digital search system in the early 2000s, staff expected an immediate jump in materials checked out. Instead, circulation numbers dipped for nearly a year before recovering. Librarians eventually traced the slump to an unexpected source: longtime patrons, many of them older adults, had built entire personal systems around browsing the physical card catalog, wandering by subject heading in a way the new keyword search did not easily replicate.
+
+Rather than abandon the older browsing experience, the library's staff designed a compromise. They kept a scaled-down physical card catalog near the entrance, updated only for new arrivals, while directing patrons wanting comprehensive searches to the digital terminals. Circulation not only recovered but eventually exceeded pre-digital numbers, suggesting that patrons valued having both options rather than being funneled entirely into one search method.
+
+The library's experience has since been cited by other small institutions weighing similar upgrades. The lesson drawn is not that digitization itself was the problem, but that a transition ignoring how people actually search, rather than how a system is designed to be searched, risks alienating exactly the patrons a library depends on most.`;
+const ACT_READING_C = [
+ {id:"rc1",tag:"main-idea",passage:ACT_READING_PASSAGE_C,prompt:"Which choice best states the main idea of the passage?",choices:["Digital catalogs are inferior to physical card catalogs.","A library's circulation recovered after it combined old and new search methods rather than replacing one entirely.","Older patrons refuse to use any form of digital technology.","Library circulation numbers are impossible to predict."],answer:1,explain:"The passage's central point is that blending both systems, not choosing one over the other, restored and even improved circulation."},
+ {id:"rc2",tag:"main-idea",passage:ACT_READING_PASSAGE_C,prompt:"The passage's final paragraph primarily serves to:",choices:["criticize other libraries for not digitizing sooner.","broaden the discussion by noting the episode's relevance to other institutions.","argue that digitization should be reversed entirely.","introduce a new, unrelated example."],answer:1,explain:"The final paragraph extends the specific library's experience into a general lesson cited by other institutions."},
+ {id:"rc3",tag:"inference",passage:ACT_READING_PASSAGE_C,prompt:"It can reasonably be inferred that the initial drop in circulation occurred mainly because:",choices:["the library removed too many books.","patrons could not adapt their existing search habits to the new system.","the digital terminals were frequently broken.","patrons stopped visiting the library altogether."],answer:1,explain:"The passage attributes the dip to patrons' built-up search habits around the card catalog not translating to keyword search."},
+ {id:"rc4",tag:"inference",passage:ACT_READING_PASSAGE_C,prompt:"Based on the passage, other small institutions cite this library's experience mainly as a caution about:",choices:["the cost of digitization.","ignoring how people actually search when designing a transition.","hiring enough staff during a transition.","choosing the wrong software vendor."],answer:1,explain:"The final paragraph draws the lesson that ignoring actual search habits, not the digitization itself, is the risk."},
+ {id:"rc5",tag:"detail",passage:ACT_READING_PASSAGE_C,prompt:"According to the passage, what compromise did the library's staff design?",choices:["They removed the digital terminals entirely.","They kept a scaled-down card catalog for new arrivals alongside the digital terminals.","They required patrons to use both systems for every search.","They closed the library temporarily to retrain patrons."],answer:1,explain:"The second paragraph states they kept a scaled-down physical catalog for new arrivals while offering digital terminals for full searches."},
+ {id:"rc6",tag:"detail",passage:ACT_READING_PASSAGE_C,prompt:"According to the passage, how long did the dip in circulation last before recovering?",choices:["A few weeks","Nearly a year","Five years","It never recovered"],answer:1,explain:"The first paragraph states circulation numbers dipped for nearly a year before recovering."},
+ {id:"rc7",tag:"vocab",passage:ACT_READING_PASSAGE_C,prompt:"As used in the passage, \"funneled\" most nearly means:",choices:["physically transported.","narrowly directed into one option.","financially supported.","gradually removed."],answer:1,explain:"\"Funneled entirely into one search method\" describes being narrowly directed toward a single option."},
+ {id:"rc8",tag:"vocab",passage:ACT_READING_PASSAGE_C,prompt:"As used in the passage, \"alienating\" most nearly means:",choices:["welcoming and including.","causing to feel excluded or estranged.","financially benefiting.","physically relocating."],answer:1,explain:"The passage warns that ignoring patrons' habits \"risks alienating\" them — that is, making them feel excluded, not welcomed."}
+];
+
+const ACT_SCIENCE_INTRO = `A researcher measured plant growth (height, in cm, after 14 days) under four light exposure conditions.
+
+Table 1
+Light exposure (hrs/day) | Avg. height (cm)
+4                        | 8.1
+8                        | 15.4
+12                       | 21.0
+16                       | 22.3
+
+A second study tested the same plant species under 12 hrs/day of light but varied watering frequency.
+
+Table 2
+Watering (times/week) | Avg. height (cm)
+1                      | 12.0
+3                      | 21.0
+5                      | 20.5`;
+
+const ACT_SCIENCE = [
+ {id:"s1",tag:"data-rep",passage:ACT_SCIENCE_INTRO,prompt:"Based on Table 1, as light exposure increases from 4 to 16 hrs/day, average plant height:",choices:["decreases steadily.","increases, but the rate of increase slows at higher exposure.","stays constant.","increases at a constant rate throughout."],answer:1,explain:"The height gains (8.1→15.4→21.0→22.3) get smaller as exposure increases, showing a slowing rate of increase."},
+ {id:"s2",tag:"data-rep",passage:ACT_SCIENCE_INTRO,prompt:"According to Table 2, watering 5 times per week compared to 3 times per week resulted in:",choices:["a large increase in height.","a slight decrease in height.","no change in watering frequency.","a doubling of height."],answer:1,explain:"Height dropped slightly from 21.0 cm (3x/week) to 20.5 cm (5x/week)."},
+ {id:"s3",tag:"research-summary",passage:ACT_SCIENCE_INTRO,prompt:"Which study design detail would most strengthen confidence in the light-exposure results (Table 1)?",choices:["Testing only one plant per condition.","Holding watering frequency constant across all light conditions.","Measuring height only once, at day 14.","Using different plant species for each light condition."],answer:1,explain:"To isolate the effect of light exposure, other variables like watering should be held constant — otherwise results could be confounded."},
+ {id:"s4",tag:"research-summary",passage:ACT_SCIENCE_INTRO,prompt:"Based on both tables, a plant given 16 hrs/day of light and watered once per week would most likely grow:",choices:["taller than any plant in either table.","shorter than the 16 hrs/day, unspecified-watering plant in Table 1, since Table 2 shows under-watering limits growth.","exactly 22.3 cm, matching Table 1.","exactly 12.0 cm, matching Table 2."],answer:1,explain:"Table 2 shows infrequent watering (1x/week) limits height even under good light, so combining max light with minimal watering would likely reduce height below the Table 1 result."},
+ {id:"s5",tag:"conflicting-viewpoints",passage:"Scientist 1 argues that the slowing growth at high light exposure (Table 1) is due to a biological ceiling — the plant's cells can only photosynthesize at a maximum rate regardless of added light. Scientist 2 argues instead that the slowdown is caused by heat stress from prolonged light exposure damaging leaf tissue, not a photosynthetic ceiling.",prompt:"Which finding, if true, would most directly support Scientist 2 over Scientist 1?",choices:["Leaf temperature was shown to rise significantly at 16 hrs/day but not at 8 hrs/day.","Photosynthesis rate was shown to plateau at a fixed maximum regardless of temperature.","Plants grown at 16 hrs/day had the same leaf temperature as those at 4 hrs/day.","Watering frequency had no effect on plant height."],answer:0,explain:"Scientist 2's claim is about heat stress; evidence that leaf temperature rises specifically at high light exposure directly supports that mechanism."},
+ {id:"s6",tag:"conflicting-viewpoints",passage:"Scientist 1 argues that the slowing growth at high light exposure (Table 1) is due to a biological ceiling — the plant's cells can only photosynthesize at a maximum rate regardless of added light. Scientist 2 argues instead that the slowdown is caused by heat stress from prolonged light exposure damaging leaf tissue, not a photosynthetic ceiling.",prompt:"Scientist 1 and Scientist 2 would most likely agree that:",choices:["Growth rate slows at high light exposure levels.","Heat stress is the primary cause of slowed growth.","Photosynthesis has a fixed maximum rate.","Watering has no effect on plant growth."],answer:0,explain:"Both scientists are trying to explain the same observed pattern — that growth slows at high exposure — even though they disagree on the cause."},
+ {id:"s7",tag:"scientific-reasoning",passage:ACT_SCIENCE_INTRO,prompt:"If a third study found that plants grown at 12 hrs/day of light with 3x/week watering reached 21.0 cm, this result would be:",choices:["inconsistent with both tables.","consistent with both Table 1 and Table 2.","consistent with Table 1 only.","consistent with Table 2 only."],answer:1,explain:"12 hrs/day light gives 21.0 cm in Table 1, and 3x/week watering gives 21.0 cm in Table 2 — the result matches both."},
+ {id:"s8",tag:"scientific-reasoning",passage:ACT_SCIENCE_INTRO,prompt:"What is the most likely reason the researcher tested multiple light exposure levels rather than just one?",choices:["To find the exposure level with the tallest resulting plants for comparison.","Because a single data point cannot show a trend or relationship between variables.","Because plants grow better with variety in testing.","To reduce the total number of plants needed."],answer:1,explain:"A single measurement can't reveal a trend — multiple levels are needed to see how height changes with exposure."}
+];
+const ACT_SCIENCE_B_INTRO = `A separate study measured seed germination rate (%) after 7 days under three soil pH levels.
+
+Table 3
+Soil pH | Germination rate (%)
+5.5     | 40
+6.5     | 78
+7.5     | 55`;
+const ACT_SCIENCE_B = [
+ {id:"sb1",tag:"data-rep",passage:ACT_SCIENCE_B_INTRO,prompt:"According to Table 3, the highest germination rate occurred at a soil pH of:",choices:["5.5","6.5","7.5","Germination rate did not depend on pH."],answer:1,explain:"78% at pH 6.5 is the highest value in the table."},
+ {id:"sb2",tag:"research-summary",passage:ACT_SCIENCE_B_INTRO,prompt:"To determine whether pH alone caused the differences in germination rate, the researcher should have:",choices:["used a different seed type for each pH level.","kept all other conditions (water, temperature, light) constant across pH levels.","tested only one pH level.","measured germination after different numbers of days for each group."],answer:1,explain:"Isolating pH as the variable requires holding all other conditions constant."},
+ {id:"sb3",tag:"conflicting-viewpoints",passage:"One researcher claims the drop in germination at pH 7.5 is due to reduced nutrient availability at higher pH. A second researcher claims it's due to increased fungal growth in less acidic soil.",prompt:"Which piece of evidence would best distinguish between these two explanations?",choices:["Germination rate at pH 5.5","Measuring nutrient levels and fungal presence separately at each pH","The total number of seeds tested","The average temperature during the study"],answer:1,explain:"Directly measuring both proposed causes (nutrients and fungal growth) is the only way to tell which one actually explains the pattern."},
+ {id:"sb4",tag:"scientific-reasoning",passage:ACT_SCIENCE_B_INTRO,prompt:"Based on the trend in Table 3, germination rate as a function of pH is best described as:",choices:["steadily increasing","steadily decreasing","rising then falling (not a straight-line trend)","completely random with no pattern"],answer:2,explain:"Germination rises from pH 5.5 to 6.5, then falls at 7.5 — a rise-then-fall pattern, not a straight line."}
+];
+
+const ACT_SCIENCE_C_INTRO = `A materials engineer tested how a metal alloy's tensile strength (the force it can withstand before breaking, in MPa) changes with the percentage of carbon added.
+
+Table 4
+Carbon content (%) | Tensile strength (MPa)
+0.2                | 400
+0.4                | 520
+0.6                | 610
+0.8                | 590
+1.0                | 540
+
+A second experiment held carbon content fixed at 0.6% and varied the cooling rate after heating.
+
+Table 5
+Cooling rate (°C/min) | Tensile strength (MPa)
+10                     | 610
+50                     | 680
+100                    | 700`;
+const ACT_SCIENCE_C = [
+ {id:"sc1",tag:"data-rep",passage:ACT_SCIENCE_C_INTRO,prompt:"According to Table 4, tensile strength is highest at a carbon content of:",choices:["0.2%","0.4%","0.6%","1.0%"],answer:2,explain:"610 MPa at 0.6% carbon is the highest value listed in Table 4."},
+ {id:"sc2",tag:"data-rep",passage:ACT_SCIENCE_C_INTRO,prompt:"Based on Table 5, increasing the cooling rate from 10°C/min to 100°C/min caused tensile strength to:",choices:["decrease","stay the same","increase","first increase, then decrease"],answer:2,explain:"Tensile strength rises from 610 to 680 to 700 MPa as cooling rate increases — a steady increase."},
+ {id:"sc3",tag:"research-summary",passage:ACT_SCIENCE_C_INTRO,prompt:"Why did the engineer hold carbon content constant at 0.6% while varying cooling rate in the second experiment?",choices:["To make the experiment take less time.","To isolate cooling rate as the only variable affecting the result.","Because 0.6% is the maximum possible carbon content.","Because tensile strength cannot be measured at other carbon levels."],answer:1,explain:"Holding one variable (carbon content) constant while changing another (cooling rate) isolates the effect of cooling rate specifically."},
+ {id:"sc4",tag:"research-summary",passage:ACT_SCIENCE_C_INTRO,prompt:"Which additional data would best help the engineer determine whether the trend in Table 4 continues beyond 1.0% carbon?",choices:["Repeating the 0.6% trial","Testing tensile strength at 1.2% and 1.4% carbon","Testing a different metal entirely","Measuring tensile strength at 0.6% with different cooling rates"],answer:1,explain:"To see whether the downward trend after 0.6% continues, the engineer needs data points beyond the current range (past 1.0%)."},
+ {id:"sc5",tag:"conflicting-viewpoints",passage:"Engineer A argues the decline in tensile strength above 0.6% carbon (Table 4) occurs because excess carbon forms brittle compounds within the metal's structure. Engineer B argues instead that the decline is caused by incomplete mixing at higher carbon concentrations, not a change in the metal's internal structure.",prompt:"Which finding would most directly support Engineer A over Engineer B?",choices:["Microscopic analysis shows brittle carbon compounds forming above 0.6% carbon.","The metal was found to mix uniformly at all carbon levels tested.","Tensile strength was identical at 0.8% and 1.0% carbon.","Cooling rate had no effect on tensile strength."],answer:0,explain:"Engineer A's claim is specifically about brittle compound formation; direct microscopic evidence of that is the strongest support for that specific explanation."},
+ {id:"sc6",tag:"conflicting-viewpoints",passage:"Engineer A argues the decline in tensile strength above 0.6% carbon (Table 4) occurs because excess carbon forms brittle compounds within the metal's structure. Engineer B argues instead that the decline is caused by incomplete mixing at higher carbon concentrations, not a change in the metal's internal structure.",prompt:"Engineer A and Engineer B would both agree that:",choices:["Tensile strength declines above 0.6% carbon content.","Brittle compounds are the cause of the decline.","Mixing quality is unrelated to tensile strength.","Cooling rate is the primary factor in tensile strength."],answer:0,explain:"Both engineers are trying to explain the same observed decline above 0.6% — they just disagree on the cause."},
+ {id:"sc7",tag:"scientific-reasoning",passage:ACT_SCIENCE_C_INTRO,prompt:"A sample with 0.6% carbon cooled at 100°C/min would most likely have a tensile strength:",choices:["lower than 610 MPa","exactly 610 MPa","higher than 610 MPa, based on the cooling rate trend in Table 5","impossible to estimate from the given data"],answer:2,explain:"Table 5 shows that at 0.6% carbon, faster cooling rates increase tensile strength beyond the baseline 610 MPa (10°C/min)."},
+ {id:"sc8",tag:"scientific-reasoning",passage:ACT_SCIENCE_C_INTRO,prompt:"What is the most likely reason the engineer tested five different carbon levels in the first experiment instead of just two?",choices:["To reduce the cost of the experiment.","To identify the specific carbon level that maximizes tensile strength, not just whether it increases or decreases.","Because five is the standard number required by law.","To test five different metals at once."],answer:1,explain:"Testing multiple levels reveals the full shape of the trend (a peak at 0.6%), which just two points could not show."}
+];
+
+const SAT_RW = [
+ {id:"sw1",tag:"grammar",prompt:"The city's transit authority, along with several community groups, {u}have proposed{/u} a new bike-lane network downtown.",choices:["NO CHANGE","has proposed","are proposing","proposing"],answer:1,explain:"The subject is 'the transit authority' (singular); 'along with several community groups' is a parenthetical phrase that doesn't change the verb's number. 'has proposed' agrees with the singular subject."},
+ {id:"sw2",tag:"grammar",prompt:"Despite the storm's intensity, {u}it's{/u} path shifted away from the coastline overnight.",choices:["NO CHANGE","its","their","it was"],answer:1,explain:"The possessive form 'its' is needed here, not the contraction 'it's' (it is)."},
+ {id:"sw3",tag:"grammar",prompt:"The novel, {u}whom critics praised for its structure,{/u} sold poorly in its first year.",choices:["NO CHANGE","which critics praised for its structure,","who critics praised for its structure,","that critics praised it for its structure,"],answer:1,explain:"'Which' correctly refers to a thing (the novel), not 'whom,' which refers to people."},
+ {id:"sw4",tag:"vocab",prompt:"Unlike her earlier, more tentative paintings, her later work is bold and ___, filling entire canvases with confident, sweeping strokes.",choices:["understated","assertive","meticulous","subdued"],answer:1,explain:"'Bold' and 'confident, sweeping strokes' point to 'assertive' as the word that fits the contrast with 'tentative.'"},
+ {id:"sw5",tag:"vocab",prompt:"The committee's report was notably ___, avoiding any firm conclusions and hedging every recommendation with qualifications.",choices:["decisive","equivocal","concise","authoritative"],answer:1,explain:"Avoiding firm conclusions and hedging describes an 'equivocal' (deliberately vague) report."},
+ {id:"sw6",tag:"vocab",prompt:"Though the two economists disagreed on nearly every policy question, their final report was surprisingly ___ in tone.",choices:["contentious","harmonious","fragmented","hostile"],answer:1,explain:"'Surprisingly' signals a contrast with their disagreement — 'harmonious' captures an unexpectedly agreeable tone."},
+ {id:"sw7",tag:"main-idea",prompt:"Text: A city planner reviewed decades of data and found that neighborhoods with more street trees consistently had lower rates of summer heat-related illness, even after accounting for income differences.\n\nWhich choice best states the main finding?",choices:["Income is the only factor affecting heat-related illness.","Street trees are associated with lower heat-related illness rates, independent of income.","Heat-related illness has increased in all neighborhoods.","Wealthier neighborhoods never experience heat-related illness."],answer:1,explain:"The text explicitly says the tree/illness link held 'even after accounting for income differences,' meaning it's independent of income."},
+ {id:"sw8",tag:"main-idea",prompt:"Text: Early drafts of the treaty included a clause guaranteeing fishing rights, but the clause was removed in the final version after objections from two delegations.\n\nWhat happened to the fishing rights clause?",choices:["It was strengthened in the final treaty.","It was removed from the final treaty after objections.","It was never proposed.","It was approved unanimously."],answer:1,explain:"The text states the clause was removed in the final version after objections from two delegations."},
+ {id:"sw9",tag:"transitions",prompt:"The lab results were inconclusive. ___, the team decided to repeat the experiment with a larger sample size.",choices:["For example,","As a result,","In contrast,","Similarly,"],answer:1,explain:"Repeating the experiment is a direct response to inconclusive results — 'As a result' shows that cause-and-effect relationship."},
+ {id:"sw10",tag:"transitions",prompt:"The company's revenue grew 12% this year. ___, its profit margin actually declined due to rising material costs.",choices:["Moreover,","However,","Therefore,","Additionally,"],answer:1,explain:"Growing revenue but declining profit margin is a contrast, so 'However' is the correct transition."},
+ {id:"sw11",tag:"grammar",prompt:"Each of the interns {u}were assigned{/u} a separate research topic to present at the end of the summer.",choices:["NO CHANGE","was assigned","have been assigned","are assigned"],answer:1,explain:"'Each' is singular, so it takes the singular verb 'was assigned.'"},
+ {id:"sw12",tag:"vocab",prompt:"The witness's account was ___ , changing key details each time she retold the story to investigators.",choices:["consistent","inconsistent","precise","reliable"],answer:1,explain:"'Changing key details each time' directly describes an 'inconsistent' account."},
+ {id:"sw13",tag:"grammar",prompt:"The results of the study, {u}which surprised even the researchers themselves,{/u} were published last week.",choices:["NO CHANGE","which surprised, even the researchers themselves,","that surprised even the researchers themselves,","surprising even the researchers themselves"],answer:0,explain:"The nonessential clause \"which surprised even the researchers themselves\" is correctly set off with commas as written."},
+ {id:"sw14",tag:"grammar",prompt:"Neither of the proposals {u}address{/u} the community's concerns about traffic.",choices:["NO CHANGE","addresses","addressing","have addressed"],answer:1,explain:"\"Neither\" is singular, so the verb must be \"addresses.\""},
+ {id:"sw15",tag:"grammar",prompt:"The photographer packed {u}their{/u} equipment carefully before the long flight.",choices:["NO CHANGE","his or her","its","the"],answer:0,explain:"When the subject's gender is unspecified or could be any, \"their\" is an accepted singular pronoun in this context; NO CHANGE is correct as written."},
+ {id:"sw16",tag:"vocab",prompt:"Rather than confront the problem directly, the manager took a ___ approach, hinting at concerns without ever naming them outright.",choices:["forthright","oblique","direct","candid"],answer:1,explain:"Hinting without naming things outright describes an indirect, or 'oblique,' approach."},
+ {id:"sw17",tag:"vocab",prompt:"Despite the harsh reviews, the director remained ___ that the film would eventually find its audience.",choices:["doubtful","convinced","indifferent","skeptical"],answer:1,explain:"\"Despite\" signals a contrast with the harsh reviews — the director stayed positive, i.e., 'convinced.'"},
+ {id:"sw18",tag:"main-idea",prompt:"Text: A city's water utility replaced aging pipes in three neighborhoods, cutting reported leaks by half, but residents in a fourth neighborhood continued to report frequent outages.\n\nWhat is the main point of the text?",choices:["Pipe replacement fully solved the city's water problems.","Pipe replacement helped in some areas but not all.","The fourth neighborhood refused pipe replacement.","Water outages increased citywide."],answer:1,explain:"The text shows improvement in three neighborhoods but ongoing problems in a fourth — a partial, not complete, success."},
+ {id:"sw19",tag:"main-idea",prompt:"Text: Although the museum's new wing drew record attendance in its opening month, curators noted that visitor numbers dropped sharply once the accompanying advertising campaign ended.\n\nWhat does the text suggest about the attendance increase?",choices:["It was permanent and unrelated to advertising.","It may have been driven largely by the ad campaign rather than lasting interest.","It had nothing to do with the new wing.","Visitor numbers continued rising after the campaign ended."],answer:1,explain:"The sharp drop once advertising ended suggests the initial surge was tied to the campaign, not necessarily lasting interest."},
+ {id:"sw20",tag:"transitions",prompt:"The startup's first product failed to gain traction. ___, the founders pivoted to a completely different market within six months.",choices:["For example,","As a result,","In the same way,","Regardless,"],answer:1,explain:"Pivoting is a direct response to the product's failure, so 'As a result' captures the cause-and-effect relationship."},
+ {id:"sw21",tag:"transitions",prompt:"The novel received glowing reviews from critics. ___, it sold far fewer copies than the publisher had expected.",choices:["Furthermore,","Yet,","Consequently,","Similarly,"],answer:1,explain:"Glowing reviews but poor sales is a contrast, so 'Yet' is the correct transition."},
+ {id:"sw22",tag:"grammar",prompt:"The data from both surveys {u}was combined{/u} to form a single, more reliable data set.",choices:["NO CHANGE","were combined","is combined","combining"],answer:1,explain:"\"Data\" here refers to two distinct survey data sets being merged, functioning as a plural subject, so \"were combined\" is correct."},
+ {id:"sw23",tag:"vocab",prompt:"The professor's lecture style was famously ___ , packed with tangents that sometimes lasted twenty minutes before returning to the original topic.",choices:["succinct","digressive","focused","terse"],answer:1,explain:"Frequent tangents describe a 'digressive' lecture style."}
+];
+
+const SAT_MATH = [
+ {id:"sm1",tag:"algebra",prompt:"If 7x + 3 = 59, what is the value of x?",choices:["8", "9", "7", "11"],answer:0,explain:"7x = 56 → x = 8."},
+ {id:"sm2",tag:"algebra",prompt:"If 2x + 2 = 32, what is the value of x?",choices:["15", "16", "14", "18"],answer:0,explain:"2x = 30 → x = 15."},
+ {id:"sm3",tag:"algebra",prompt:"If 3x + 6 = 39, what is the value of x?",choices:["11", "12", "10", "14"],answer:0,explain:"3x = 33 → x = 11."},
+ {id:"sm4",tag:"algebra",prompt:"If 2x + 15 = 35, what is the value of x?",choices:["10", "11", "9", "13"],answer:0,explain:"2x = 20 → x = 10."},
+ {id:"sm5",tag:"algebra",prompt:"If 5x + 1 = 16, what is the value of x?",choices:["3", "4", "2", "6"],answer:0,explain:"5x = 15 → x = 3."},
+ {id:"sm6",tag:"algebra",prompt:"If 8x + 7 = 31, what is the value of x?",choices:["3", "4", "2", "6"],answer:0,explain:"8x = 24 → x = 3."},
+ {id:"sm7",tag:"algebra",prompt:"If 5x + 2 = 52, what is the value of x?",choices:["10", "11", "9", "13"],answer:0,explain:"5x = 50 → x = 10."},
+ {id:"sm8",tag:"algebra",prompt:"If 8x + 1 = 121, what is the value of x?",choices:["15", "16", "14", "18"],answer:0,explain:"8x = 120 → x = 15."},
+ {id:"sm9",tag:"algebra",prompt:"If 3x + 4 = 40, what is the value of x?",choices:["12", "13", "11", "15"],answer:0,explain:"3x = 36 → x = 12."},
+ {id:"sm10",tag:"algebra",prompt:"If 2x + 10 = 32, what is the value of x?",choices:["11", "12", "10", "14"],answer:0,explain:"2x = 22 → x = 11."},
+ {id:"sm11",tag:"algebra",prompt:"If 8x + 1 = 41, what is the value of x?",choices:["5", "6", "4", "8"],answer:0,explain:"8x = 40 → x = 5."},
+ {id:"smA12",tag:"advanced-math",prompt:"What are the solutions to x² - 10x + 9 = 0?",choices:["x = 1, 9", "x = -1, -9", "x = 1, -9", "x = 2, 9"],answer:0,explain:"Factors to (x−1)(x−9)=0, so x = 1 or x = 9."},
+ {id:"smA13",tag:"advanced-math",prompt:"What are the solutions to x² - 8x + 15 = 0?",choices:["x = 3, 5", "x = -3, -5", "x = 3, -5", "x = 4, 5"],answer:0,explain:"Factors to (x−3)(x−5)=0, so x = 3 or x = 5."},
+ {id:"smA14",tag:"advanced-math",prompt:"What are the solutions to x² - 10x + 21 = 0?",choices:["x = 7, 3", "x = -7, -3", "x = 7, -3", "x = 8, 3"],answer:0,explain:"Factors to (x−7)(x−3)=0, so x = 7 or x = 3."},
+ {id:"smA15",tag:"advanced-math",prompt:"What are the solutions to x² - 11x + 18 = 0?",choices:["x = 9, 2", "x = -9, -2", "x = 9, -2", "x = 10, 2"],answer:0,explain:"Factors to (x−9)(x−2)=0, so x = 9 or x = 2."},
+ {id:"smA16",tag:"advanced-math",prompt:"What are the solutions to x² - 14x + 45 = 0?",choices:["x = 5, 9", "x = -5, -9", "x = 5, -9", "x = 6, 9"],answer:0,explain:"Factors to (x−5)(x−9)=0, so x = 5 or x = 9."},
+ {id:"smA17",tag:"advanced-math",prompt:"What are the solutions to x² - 5x + 6 = 0?",choices:["x = 3, 2", "x = -3, -2", "x = 3, -2", "x = 4, 2"],answer:0,explain:"Factors to (x−3)(x−2)=0, so x = 3 or x = 2."},
+ {id:"smA18",tag:"advanced-math",prompt:"What are the solutions to x² - 10x + 24 = 0?",choices:["x = 4, 6", "x = -4, -6", "x = 4, -6", "x = 5, 6"],answer:0,explain:"Factors to (x−4)(x−6)=0, so x = 4 or x = 6."},
+ {id:"smA19",tag:"advanced-math",prompt:"What are the solutions to x² - 11x + 18 = 0?",choices:["x = 2, 9", "x = -2, -9", "x = 2, -9", "x = 3, 9"],answer:0,explain:"Factors to (x−2)(x−9)=0, so x = 2 or x = 9."},
+ {id:"smA20",tag:"advanced-math",prompt:"What are the solutions to x² - 3x + 2 = 0?",choices:["x = 2, 1", "x = -2, -1", "x = 2, -1", "x = 3, 1"],answer:0,explain:"Factors to (x−2)(x−1)=0, so x = 2 or x = 1."},
+ {id:"smA21",tag:"advanced-math",prompt:"What are the solutions to x² - 12x + 32 = 0?",choices:["x = 4, 8", "x = -4, -8", "x = 4, -8", "x = 5, 8"],answer:0,explain:"Factors to (x−4)(x−8)=0, so x = 4 or x = 8."},
+ {id:"smA22",tag:"advanced-math",prompt:"What are the solutions to x² - 16x + 63 = 0?",choices:["x = 9, 7", "x = -9, -7", "x = 9, -7", "x = 10, 7"],answer:0,explain:"Factors to (x−9)(x−7)=0, so x = 9 or x = 7."},
+ {id:"smP23",tag:"problem-solving",prompt:"What is 40% of 200?",choices:["80", "85", "75", "90"],answer:0,explain:"40% of 200 = 40/100 × 200 = 80."},
+ {id:"smP24",tag:"problem-solving",prompt:"What is 70% of 200?",choices:["140", "145", "135", "150"],answer:0,explain:"70% of 200 = 70/100 × 200 = 140."},
+ {id:"smP25",tag:"problem-solving",prompt:"What is 40% of 180?",choices:["72", "77", "67", "82"],answer:0,explain:"40% of 180 = 40/100 × 180 = 72."},
+ {id:"smP26",tag:"problem-solving",prompt:"What is 30% of 400?",choices:["120", "125", "115", "130"],answer:0,explain:"30% of 400 = 30/100 × 400 = 120."},
+ {id:"smP27",tag:"problem-solving",prompt:"What is 25% of 300?",choices:["75", "80", "70", "85"],answer:0,explain:"25% of 300 = 25/100 × 300 = 75."},
+ {id:"smP28",tag:"problem-solving",prompt:"What is 30% of 120?",choices:["36", "41", "31", "46"],answer:0,explain:"30% of 120 = 30/100 × 120 = 36."},
+ {id:"smP79",tag:"problem-solving",prompt:"50% of a number is 50. What is the number?",choices:["100", "110", "90", "120"],answer:0,explain:"50 / 0.5 = 100."},
+ {id:"smP80",tag:"problem-solving",prompt:"50% of a number is 60. What is the number?",choices:["120", "130", "110", "140"],answer:0,explain:"60 / 0.5 = 120."},
+ {id:"smP81",tag:"problem-solving",prompt:"35% of a number is 80. What is the number?",choices:["229", "239", "219", "249"],answer:0,explain:"80 / 0.35 = 229."},
+ {id:"smP82",tag:"problem-solving",prompt:"40% of a number is 50. What is the number?",choices:["125", "135", "115", "145"],answer:0,explain:"50 / 0.4 = 125."},
+ {id:"smP83",tag:"problem-solving",prompt:"50% of a number is 30. What is the number?",choices:["60", "70", "50", "80"],answer:0,explain:"30 / 0.5 = 60."},
+ {id:"smG34",tag:"geometry",prompt:"A right triangle has legs of 3 and 4. What is its hypotenuse?",choices:["5", "6", "4", "8"],answer:0,explain:"3-4-5 is a Pythagorean triple."},
+ {id:"smG35",tag:"geometry",prompt:"A right triangle has legs of 6 and 8. What is its hypotenuse?",choices:["10", "11", "9", "13"],answer:0,explain:"6-8-10 is a Pythagorean triple."},
+ {id:"smG36",tag:"geometry",prompt:"A right triangle has legs of 5 and 12. What is its hypotenuse?",choices:["13", "14", "12", "16"],answer:0,explain:"5-12-13 is a Pythagorean triple."},
+ {id:"smG37",tag:"geometry",prompt:"A right triangle has legs of 9 and 12. What is its hypotenuse?",choices:["15", "16", "14", "18"],answer:0,explain:"9-12-15 is a Pythagorean triple."},
+ {id:"smG38",tag:"geometry",prompt:"A right triangle has legs of 8 and 15. What is its hypotenuse?",choices:["17", "18", "16", "20"],answer:0,explain:"8-15-17 is a Pythagorean triple."},
+ {id:"smG39",tag:"geometry",prompt:"A right triangle has legs of 7 and 24. What is its hypotenuse?",choices:["25", "26", "24", "28"],answer:0,explain:"7-24-25 is a Pythagorean triple."},
+ {id:"smG90",tag:"geometry",prompt:"In a right triangle, one acute angle measures 27°. What is the measure of the other acute angle?",choices:["63°", "68°", "58°", "27°"],answer:0,explain:"Acute angles in a right triangle sum to 90°: 90 − 27 = 63°."},
+ {id:"smG91",tag:"geometry",prompt:"In a right triangle, one acute angle measures 52°. What is the measure of the other acute angle?",choices:["38°", "43°", "33°", "52°"],answer:0,explain:"Acute angles in a right triangle sum to 90°: 90 − 52 = 38°."},
+ {id:"smG92",tag:"geometry",prompt:"In a right triangle, one acute angle measures 46°. What is the measure of the other acute angle?",choices:["44°", "49°", "39°", "46°"],answer:0,explain:"Acute angles in a right triangle sum to 90°: 90 − 46 = 44°."},
+ {id:"smG93",tag:"geometry",prompt:"In a right triangle, one acute angle measures 30°. What is the measure of the other acute angle?",choices:["60°", "65°", "55°", "30°"],answer:0,explain:"Acute angles in a right triangle sum to 90°: 90 − 30 = 60°."},
+ {id:"smG94",tag:"geometry",prompt:"In a right triangle, one acute angle measures 68°. What is the measure of the other acute angle?",choices:["22°", "27°", "17°", "68°"],answer:0,explain:"Acute angles in a right triangle sum to 90°: 90 − 68 = 22°."}
+];
+
+/* Retest / backup pools (used for targeted retest after gap analysis) */
+const BACKUP = {
+  "ACT-English": {
+    punctuation: [{id:"be1",tag:"punctuation",prompt:"The chef's signature dish{u} which uses saffron and preserved lemon{/u} takes nearly four hours to prepare.",choices:["NO CHANGE",", which uses saffron and preserved lemon,",". which uses saffron and preserved lemon,","which uses, saffron and preserved lemon,"],answer:1,explain:"The nonessential clause needs commas on both sides."}],
+    "sentence-structure":[{id:"be2",tag:"sentence-structure",prompt:"{u}Running late for the meeting.{/u} David skipped breakfast entirely.",choices:["NO CHANGE","Running late for the meeting,","Running, late for the meeting","Running late, for the meeting,"],answer:1,explain:"The fragment needs a comma to attach it to the main clause 'David skipped breakfast entirely.'"}],
+    agreement:[{id:"be3",tag:"agreement",prompt:"A collection of rare coins {u}were displayed{/u} at the local history museum.",choices:["NO CHANGE","was displayed","have been displayed","are displayed"],answer:1,explain:"'A collection' is a singular subject, so it takes 'was displayed.'"}],
+    transitions:[{id:"be4",tag:"transitions",prompt:"The bakery raised its prices last month. {u}Similarly{/u}, its daily customer count has dropped by nearly a third.",choices:["NO CHANGE","As a result","For example","In addition"],answer:1,explain:"The drop in customers is a consequence of the price increase, so 'As a result' fits better than 'Similarly.'"}]
+  },
+  "ACT-Math": {
+    algebra:[{id:"bm1",tag:"algebra",prompt:"Solve for x: 4x + 6 = 2x + 18",choices:["4","6","8","10"],answer:1,explain:"2x = 12 → x = 6."}],
+    geometry:[{id:"bm2",tag:"geometry",prompt:"A square has an area of 81. What is its perimeter?",choices:["9","18","36","81"],answer:2,explain:"Side = 9, perimeter = 4×9 = 36."}],
+    functions:[{id:"bm3",tag:"functions",prompt:"If h(x) = 3x − 1, what is h(4)?",choices:["9","10","11","12"],answer:2,explain:"3(4) − 1 = 11."}],
+    stats:[{id:"bm4",tag:"stats",prompt:"A jar has 6 yellow and 4 purple candies. What is the probability of picking a purple one?",choices:["2/5","3/5","1/2","4/5"],answer:0,explain:"4/10 = 2/5."}]
+  },
+  "ACT-Reading": {
+    "main-idea":[ACT_READING_B[0]],
+    inference:[ACT_READING_B[1]],
+    detail:[ACT_READING_B[2]],
+    vocab:[ACT_READING_B[3]]
+  },
+  "ACT-Science": {
+    "data-rep":[ACT_SCIENCE_B[0]],
+    "research-summary":[ACT_SCIENCE_B[1]],
+    "conflicting-viewpoints":[ACT_SCIENCE_B[2]],
+    "scientific-reasoning":[ACT_SCIENCE_B[3]]
+  },
+  "SAT-RW": {
+    grammar:[{id:"bsw1",tag:"grammar",prompt:"The board of directors {u}have voted{/u} to postpone the merger until next quarter.",choices:["NO CHANGE","has voted","are voting","were voting"],answer:1,explain:"'Board' is a singular collective subject: 'has voted.'"}],
+    vocab:[{id:"bsw2",tag:"vocab",prompt:"After months of drought, the sudden rainfall was a ___ relief for local farmers.",choices:["negligible","tremendous","minor","questionable"],answer:1,explain:"After months of drought, rainfall would bring major relief — 'tremendous' fits."}],
+    "main-idea":[{id:"bsw3",tag:"main-idea",prompt:"Text: Although the new software reduced processing time by half, employees reported that the steep learning curve slowed adoption in its first months.\n\nWhat is the main point?",choices:["The software was a complete failure.","The software improved speed but was initially hard to adopt.","Employees refused to use the software.","Processing time did not change."],answer:1,explain:"The text shows a benefit (faster processing) alongside a drawback (learning curve slowing adoption)."}],
+    transitions:[{id:"bsw4",tag:"transitions",prompt:"The bridge has been closed for repairs since March. ___, traffic on nearby roads has increased significantly.",choices:["Similarly,","As a result,","For instance,","Nonetheless,"],answer:1,explain:"Increased nearby traffic is a direct consequence of the closure."}]
+  },
+  "SAT-Math": {
+    algebra:[{id:"bsm1",tag:"algebra",prompt:"If 3x + 4 = 19, what is x?",choices:["3","5","7","9"],answer:1,explain:"3x = 15 → x = 5."}],
+    "advanced-math":[{id:"bsm2",tag:"advanced-math",prompt:"If f(x) = x² − 4, what is f(5)?",choices:["19","20","21","25"],answer:1,explain:"25 − 4 = 21... wait recompute: 5²=25, 25-4=21."}],
+    "problem-solving":[{id:"bsm3",tag:"problem-solving",prompt:"35% of a number is 70. What is the number?",choices:["150","175","200","210"],answer:2,explain:"70 / 0.35 = 200."}],
+    geometry:[{id:"bsm4",tag:"geometry",prompt:"A cone has radius 3 and height 4. What is its volume in terms of π? (V = (1/3)πr²h)",choices:["12π","16π","24π","36π"],answer:0,explain:"(1/3)π(9)(4) = 12π."}]
+  }
+};
+// fix bsm2 answer to match correct math (21 is index 2)
+BACKUP["SAT-Math"]["advanced-math"][0].answer = 2;
+BACKUP["SAT-Math"]["advanced-math"][0].explain = "f(5) = 5² − 4 = 25 − 4 = 21.";
+
+const LESSONS = {
+  punctuation:{title:"Punctuation: nonessential clauses & comma splices",body:"Nonessential (extra) information gets a comma on BOTH sides, or none at all. Two independent clauses can never be joined with just a comma — use a period, semicolon, or a comma + conjunction (and/but/so)."},
+  "sentence-structure":{title:"Fragments, run-ons & modifiers",body:"A sentence needs an independent clause (subject + verb that can stand alone). Watch for introductory phrases: whatever comes right after the comma must be the thing being described — otherwise you have a dangling modifier."},
+  agreement:{title:"Subject-verb agreement",body:"Words like 'each,' 'neither,' 'every,' and collective nouns ('team,' 'committee,' 'group') are grammatically singular, even when they refer to multiple people. Ignore words in between the subject and verb — match the verb to the true subject."},
+  transitions:{title:"Logical transitions",body:"Before picking a transition word, decide the actual relationship between the two ideas: cause/effect (as a result, therefore), contrast (however, nonetheless), addition (moreover, in addition), or example (for instance). Read both sentences fully before choosing."},
+  algebra:{title:"Linear equations & systems",body:"Isolate the variable one operation at a time, doing the same thing to both sides. For systems, substitute one equation into the other, or set them equal when both equal 'y'. Always double check by plugging your answer back in."},
+  geometry:{title:"Triangles, circles & the Pythagorean theorem",body:"Memorize common Pythagorean triples (3-4-5, 6-8-10, 5-12-13). For circles, know that Area = πr² and Circumference = 2πr, and that they're connected through r."},
+  functions:{title:"Evaluating & transforming functions",body:"To evaluate f(a), substitute a for every x in the function. For transformations: adding/subtracting INSIDE the parentheses shifts left/right (opposite of intuition); adding/subtracting OUTSIDE shifts up/down (matches intuition)."},
+  stats:{title:"Probability & basic statistics",body:"Probability = favorable outcomes / total outcomes. For mean problems, use Sum = Mean × Count, then solve for the missing piece."},
+  "main-idea":{title:"Main idea & purpose",body:"The main idea sums up the WHOLE passage, not just one paragraph. Eliminate answers that are too narrow (only true of one part) or too broad (not actually supported by the text)."},
+  inference:{title:"Inference questions",body:"The correct inference is a small, logical step beyond what's directly stated — not a stated fact, but not a leap either. If an answer requires outside knowledge or contradicts the passage, it's wrong."},
+  detail:{title:"Detail / lookup questions",body:"These have a directly stated answer in the text. Go back and find the exact line before choosing — don't rely on memory of the passage."},
+  vocab:{title:"Vocabulary in context",body:"Ignore your first instinct for the word's most common meaning. Re-read the sentence and figure out what word would make sense in that specific context, then match it to the closest choice."},
+  "data-rep":{title:"Reading data tables & graphs",body:"Before answering, identify what each column/axis represents and the units. Look for the direction of the trend (increasing, decreasing, leveling off) rather than memorizing exact numbers."},
+  "research-summary":{title:"Evaluating experimental design",body:"Good experiments change ONE variable at a time and hold everything else constant. When asked how to 'strengthen' a study, look for an answer that removes a confounding variable."},
+  "conflicting-viewpoints":{title:"Comparing two scientists' views",body:"Identify exactly where the two views agree and where they diverge. Questions often ask what evidence would support one view specifically — that evidence must relate to what makes that view unique, not something both would agree with."},
+  "scientific-reasoning":{title:"General scientific reasoning",body:"Think about why researchers design studies the way they do — usually to establish trends or rule out other explanations. Check whether a new data point is consistent with a previously described pattern."},
+  grammar:{title:"Grammar & conventions",body:"Same core rules as ACT English: subject-verb agreement, correct possessive vs. contraction forms, and correct relative pronouns (who/which/that). Read the sentence with each answer choice plugged in."},
+  "advanced-math":{title:"Quadratics & functions",body:"Practice factoring quadratics quickly, and remember the discriminant (b² − 4ac) tells you how many real solutions an equation has: positive = 2, zero = 1, negative = 0."},
+  "problem-solving":{title:"Word problems, ratios & data analysis",body:"Translate the words into an equation piece by piece. For percent problems, remember 'X% of a number' means multiply by X/100; to find the original number, divide instead."}
+};
+
+/* ============================= TEST DEFINITIONS ============================= */
+/* ============================= TIMER PACING (Test Mode only) ============================= */
+// Seconds per question, derived from official section times ÷ official question counts,
+// then applied to however many questions THIS app's section actually has.
+const TIMER_PACE_OFFICIAL = { // Classic ACT (this app's ACT format) + current Digital SAT
+  "ACT-English": 36,    // 75q / 45min
+  "ACT-Math": 60,       // 60q / 60min
+  "ACT-Reading": 52.5,  // 40q / 35min
+  "ACT-Science": 52.5,  // 40q / 35min
+  "SAT-RW": 71.1,       // 54q / 64min
+  "SAT-Math": 95.5      // 44q / 70min
+};
+const TIMER_PACE_ENHANCED_ACT = { // Current 2025–2026 "Enhanced ACT" — Science pacing unchanged
+  "ACT-English": 42,    // 50q / 35min
+  "ACT-Math": 67,       // 45q / 50min
+  "ACT-Reading": 67,    // 36q / 40min
+  "ACT-Science": 52.5,
+  "SAT-RW": 71.1,
+  "SAT-Math": 95.5
+};
+function secPerQuestion(sectionKey, prefs){
+  if(!prefs) return 60;
+  if(prefs.preset === "custom") return Math.max(5, prefs.customSecPerQ || 60);
+  const table = prefs.preset === "enhanced_act" ? TIMER_PACE_ENHANCED_ACT : TIMER_PACE_OFFICIAL;
+  return table[sectionKey] || 60;
+}
+function computeAndSetTimer(list){
+  if(state.mode === "test" && state.timerPrefsUsed && state.timerPrefsUsed.enabled && list && list.length){
+    const total = list.reduce((sum,q)=> sum + secPerQuestion(q.sectionKey, state.timerPrefsUsed), 0);
+    state.timerEnabled = true;
+    state.timerTotalSeconds = Math.round(total);
+    state.timerSecondsRemaining = Math.round(total);
+  } else {
+    state.timerEnabled = false;
+    state.timerTotalSeconds = 0;
+    state.timerSecondsRemaining = 0;
+  }
+}
+function formatClock(totalSeconds){
+  const neg = totalSeconds < 0;
+  const s = Math.abs(Math.round(totalSeconds));
+  const h = Math.floor(s/3600);
+  const m = Math.floor((s%3600)/60);
+  const sec = s%60;
+  const mm = String(m).padStart(2,'0');
+  const ss = String(sec).padStart(2,'0');
+  const core = h>0 ? `${h}:${mm}:${ss}` : `${mm}:${ss}`;
+  return neg ? `+${core}` : core;
+}
+function getTimerPrefsFromForm(){
+  const toggle = document.getElementById('timerEnableToggle');
+  const enabled = toggle ? toggle.checked : false;
+  const presetEl = document.querySelector('input[name="timerPreset"]:checked');
+  const preset = presetEl ? presetEl.value : "official";
+  const customEl = document.getElementById('timerCustomSec');
+  const customSecPerQ = customEl ? (parseInt(customEl.value,10) || 60) : 60;
+  return {enabled, preset, customSecPerQ};
+}
+function startTestModeFromHome(testKey){
+  const prefs = getTimerPrefsFromForm();
+  startTest(testKey, "test", prefs);
+}
+
+let timerIntervalId = null;
+function updateTimerBadge(){
+  const el = document.getElementById('timerBadge');
+  if(!el) return;
+  const overtime = state.timerSecondsRemaining < 0;
+  const lowTime = !overtime && state.timerTotalSeconds>0 && (state.timerSecondsRemaining / state.timerTotalSeconds) <= 0.1;
+  el.textContent = (overtime ? "Overtime " : "") + formatClock(state.timerSecondsRemaining);
+  el.classList.toggle('timerLow', lowTime);
+  el.classList.toggle('timerOver', overtime);
+}
+function manageTimerInterval(){
+  const shouldRun = state.mode === "test" && state.timerEnabled && (state.view==="test" || state.view==="retest");
+  if(shouldRun && !timerIntervalId){
+    timerIntervalId = setInterval(()=>{
+      state.timerSecondsRemaining -= 1;
+      updateTimerBadge();
+    }, 1000);
+  }
+  if(!shouldRun && timerIntervalId){
+    clearInterval(timerIntervalId);
+    timerIntervalId = null;
+  }
+}
+
+const TESTS = {
+  ACT: {
+    name:"ACT — Classic Format",
+    sections:[
+      {key:"ACT-English", label:"English", time:0, questions:ACT_ENGLISH},
+      {key:"ACT-Math", label:"Math", time:0, questions:ACT_MATH},
+      {key:"ACT-Reading", label:"Reading", time:0, questions:ACT_READING.concat(ACT_READING_C)},
+      {key:"ACT-Science", label:"Science", time:0, questions:ACT_SCIENCE.concat(ACT_SCIENCE_C)}
+    ]
+  },
+  SAT: {
+    name:"SAT — Digital Format",
+    sections:[
+      {key:"SAT-RW", label:"Reading & Writing", time:0, questions:SAT_RW},
+      {key:"SAT-Math", label:"Math", time:0, questions:SAT_MATH}
+    ]
+  }
+};
+
+/* ============================= MASTER QUESTION POOL ============================= */
+// Every question, from every main bank AND every backup bank, indexed by id.
+// This lets a saved/resumed session reconstruct its exact question list,
+// and lets a restarted session draw a fresh mix that can include backup items.
+const ALL_QUESTIONS_BY_ID = {};
+function registerQuestions(list, sectionKey, sectionLabel){
+  list.forEach(q=>{
+    ALL_QUESTIONS_BY_ID[q.id] = Object.assign({}, q, {sectionKey, sectionLabel});
+  });
+}
+TESTS.ACT.sections.concat(TESTS.SAT.sections).forEach(sec=>{
+  registerQuestions(sec.questions, sec.key, sec.label);
+  if(BACKUP[sec.key]){
+    Object.values(BACKUP[sec.key]).forEach(arr=>registerQuestions(arr, sec.key, sec.label));
+  }
+});
+
+function shuffleArr(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function buildSectionPool(sectionKey){
+  const sec = TESTS.ACT.sections.concat(TESTS.SAT.sections).find(s=>s.key===sectionKey);
+  let pool = sec.questions.map(q=>Object.assign({}, q, {sectionKey:sec.key, sectionLabel:sec.label}));
+  if(BACKUP[sectionKey]){
+    Object.values(BACKUP[sectionKey]).forEach(arr=>{
+      arr.forEach(q=>pool.push(Object.assign({}, q, {sectionKey:sec.key, sectionLabel:sec.label})));
+    });
+  }
+  return pool;
+}
+
+// Fresh draw for a testKey: same per-section question COUNT as the standard test,
+// but shuffled and (where backup items exist) potentially swapped for variety.
+function buildFreshTest(testKey){
+  const t = TESTS[testKey];
+  let flat = [];
+  t.sections.forEach(sec=>{
+    const pool = buildSectionPool(sec.key);
+    const shuffled = shuffleArr(pool);
+    flat = flat.concat(shuffled.slice(0, sec.questions.length));
+  });
+  return flat;
+}
+
+/* ============================= STATE ============================= */
+let state = {
+  view:"home",           // home | test | results | retest | retestResults
+  testKey:null,
+  mode:"test",            // "test" or "tutor"
+  activeFlow:null,        // "test" or "retest" — which flow is currently paused/active
+  flatQuestions:[],       // flattened list with section label
+  answers:{},             // qid -> chosen index
+  currentIndex:0,
+  startedAt:null,
+  retestQuestions:[],
+  retestAnswers:{},
+  retestIndex:0,
+  weakTags:[],
+  tutorProgress:{},       // qid -> {wrongTried:Set, solved:bool}
+  retestTutorProgress:{},
+  timerEnabled:false,      // Test Mode only — never applies in Tutor Mode
+  timerTotalSeconds:0,
+  timerSecondsRemaining:0,
+  timerPrefsUsed:null      // {enabled, preset, customSecPerQ} — remembered so Restart can reapply it
+};
+
+/* ============================= IN-PROGRESS SESSION PERSISTENCE ============================= */
+function serializeTutorStore(store){
+  const out = {};
+  Object.keys(store).forEach(qid=>{
+    out[qid] = {wrongTried: Array.from(store[qid].wrongTried), solved: store[qid].solved};
+  });
+  return out;
+}
+function deserializeTutorStore(obj){
+  const out = {};
+  Object.keys(obj||{}).forEach(qid=>{
+    out[qid] = {wrongTried: new Set(obj[qid].wrongTried), solved: obj[qid].solved};
+  });
+  return out;
+}
+
+async function saveInProgress(){
+  if(!state.testKey || (state.view!=="test" && state.view!=="retest")) return;
+  const payload = {
+    testKey: state.testKey,
+    mode: state.mode,
+    activeFlow: state.view, // "test" or "retest"
+    weakTags: state.weakTags,
+    flatQuestionIds: state.flatQuestions.map(q=>q.id),
+    answers: state.answers,
+    currentIndex: state.currentIndex,
+    tutorProgress: serializeTutorStore(state.tutorProgress),
+    retestQuestionIds: state.retestQuestions.map(q=>q.id),
+    retestAnswers: state.retestAnswers,
+    retestIndex: state.retestIndex,
+    retestTutorProgress: serializeTutorStore(state.retestTutorProgress),
+    timerEnabled: state.timerEnabled,
+    timerTotalSeconds: state.timerTotalSeconds,
+    timerSecondsRemaining: state.timerSecondsRemaining,
+    timerPrefsUsed: state.timerPrefsUsed,
+    savedAt: Date.now()
+  };
+  try{
+    localStorage.setItem('sat_act_inprogress', JSON.stringify(payload));
+  }catch(e){ console.error('save in-progress failed', e); }
+}
+
+async function loadInProgress(){
+  try{
+    const raw = localStorage.getItem('sat_act_inprogress');
+    if(!raw) return null;
+    const p = JSON.parse(raw);
+    p.flatQuestions = p.flatQuestionIds.map(id=>ALL_QUESTIONS_BY_ID[id]).filter(Boolean);
+    p.retestQuestions = p.retestQuestionIds.map(id=>ALL_QUESTIONS_BY_ID[id]).filter(Boolean);
+    return p;
+  }catch(e){ return null; }
+}
+
+async function clearInProgress(){
+  try{
+    localStorage.removeItem('sat_act_inprogress');
+  }catch(e){ /* nothing saved, fine */ }
+}
+
+/* ============================= PERSISTENT TROUBLE LOG ============================= */
+async function loadTroubleLog(){
+  // Standalone build: uses this phone/browser's local storage (works offline, no account needed).
+  try{
+    const raw = localStorage.getItem('sat_act_troublelog');
+    return raw ? JSON.parse(raw) : {tags:{}, sessions:[]};
+  }catch(e){
+    return {tags:{}, sessions:[]};
+  }
+}
+
+async function updateTroubleLog(tagStats){
+  try{
+    let existing = await loadTroubleLog();
+    Object.keys(tagStats).forEach(tag=>{
+      const s = tagStats[tag];
+      if(!existing.tags[tag]) existing.tags[tag] = {wrong:0, seen:0};
+      existing.tags[tag].seen += s.total;
+      existing.tags[tag].wrong += (s.total - s.correct);
+      existing.tags[tag].last = Date.now();
+    });
+    existing.sessions.push({date:Date.now(), testKey:state.testKey, mode:state.mode});
+    if(existing.sessions.length>50) existing.sessions = existing.sessions.slice(-50);
+    localStorage.setItem('sat_act_troublelog', JSON.stringify(existing));
+  }catch(e){
+    console.error('trouble log save failed', e);
+  }
+}
+
+function findBackupQuestionsForTags(tags){
+  let pool = [];
+  Object.keys(BACKUP).forEach(sectionKey=>{
+    const sectionLabel = (TESTS.ACT.sections.concat(TESTS.SAT.sections)).find(s=>s.key===sectionKey);
+    const label = sectionLabel ? sectionLabel.label : sectionKey;
+    tags.forEach(tag=>{
+      if(BACKUP[sectionKey][tag]){
+        BACKUP[sectionKey][tag].forEach(q=>{
+          pool.push(Object.assign({}, q, {sectionKey, sectionLabel: label}));
+        });
+      }
+    });
+  });
+  const seen = new Set();
+  return pool.filter(q=>{ if(seen.has(q.id)) return false; seen.add(q.id); return true; });
+}
+
+function flattenTest(testKey){
+  const t = TESTS[testKey];
+  let flat = [];
+  t.sections.forEach(sec=>{
+    sec.questions.forEach(q=>flat.push(Object.assign({}, q, {sectionKey:sec.key, sectionLabel:sec.label})));
+  });
+  return flat;
+}
+
+function parseUnderline(text){
+  return text.replace(/\{u\}/g,'<span class="underline">').replace(/\{\/u\}/g,'</span>');
+}
+
+/* ============================= RENDER ============================= */
+const app = document.getElementById('app');
+const ticketBox = document.getElementById('ticketBox');
+
+let saveDebounceTimer = null;
+let saveRetryCount = 0;
+function scheduleSave(){
+  if(saveDebounceTimer) clearTimeout(saveDebounceTimer);
+  saveDebounceTimer = setTimeout(()=>{ saveInProgress(); }, 900);
+}
+
+function render(){
+  ticketBox.innerHTML = "NO. " + String(Math.floor(Math.random()*900+100)) + "<br>SEAT " + (state.testKey||"—");
+  if(state.view==="test" || state.view==="retest"){
+    state.activeFlow = state.view;
+    scheduleSave();
+  }
+  manageTimerInterval();
+  if(state.view==="home") return renderHome();
+  if(state.view==="test") return renderTest(false);
+  if(state.view==="results") return renderResults();
+  if(state.view==="retest") return renderTest(true);
+  if(state.view==="retestResults") return renderRetestResults();
+}
+
+function renderHome(){
+  app.innerHTML = `
+    <div class="card">
+      <h2 class="section-title">Diagnostic Practice — Choose a Test &amp; Mode</h2>
+      <div class="testGrid">
+        <div class="testPick">
+          <h3>ACT</h3>
+          <p>Classic full format: English, Math, Reading, Science. This diagnostic version covers all four sections with representative questions in every skill category.</p>
+          <div class="meta">${ACT_ENGLISH.length+ACT_MATH.length+ACT_READING.length+ACT_READING_C.length+ACT_SCIENCE.length+ACT_SCIENCE_C.length} questions · 4 sections</div>
+          <div class="modeRow">
+            <div class="modeBtn tutor" onclick="startTest('ACT','tutor')">Tutor Mode</div>
+            <div class="modeBtn testmode" onclick="startTestModeFromHome('ACT')">Test Mode</div>
+          </div>
+        </div>
+        <div class="testPick">
+          <h3>SAT</h3>
+          <p>Digital format: Reading &amp; Writing and Math, focused on grammar, vocabulary, algebra, and problem-solving as requested.</p>
+          <div class="meta">${SAT_RW.length+SAT_MATH.length} questions · 2 sections</div>
+          <div class="modeRow">
+            <div class="modeBtn tutor" onclick="startTest('SAT','tutor')">Tutor Mode</div>
+            <div class="modeBtn testmode" onclick="startTestModeFromHome('SAT')">Test Mode</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="section-title">Timer — Test Mode Only</h2>
+      <p style="font-size:13px;color:var(--ink-soft);margin-top:-6px;">Off by default. Tutor Mode never shows a timer, since it's built for stopping and working through mistakes, not racing the clock. This applies whenever you start Test Mode below.</p>
+      <div class="timerSettings">
+        <label><input type="checkbox" id="timerEnableToggle" onchange="document.getElementById('timerPresetGroup').classList.toggle('open', this.checked)"> Enable timer for my next Test Mode attempt</label>
+        <div class="presetGroup" id="timerPresetGroup">
+          <label><input type="radio" name="timerPreset" value="official" checked> Official pacing — Classic ACT (this app's format) + current Digital SAT</label>
+          <label><input type="radio" name="timerPreset" value="enhanced_act"> Official pacing — Enhanced ACT (2025–2026 shorter format, current for most test dates) + Digital SAT</label>
+          <label><input type="radio" name="timerPreset" value="custom"> Custom goal: <input type="number" id="timerCustomSec" min="5" max="600" value="60"> seconds per question</label>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2 class="section-title">Two ways to practice</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <div>
+          <h3 style="font-size:15px;margin-bottom:6px;">Tutor Mode</h3>
+          <p style="font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin:0;">Won't let you move on with a wrong answer. Pick wrong and it's marked, explained immediately, and logged for later — then you try again on the same question until you get it, and it explains why the right one is right.</p>
+        </div>
+        <div>
+          <h3 style="font-size:15px;margin-bottom:6px;">Test Mode</h3>
+          <p style="font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin:0;">Real exam conditions. Answer straight through with no feedback, then see everything you missed — with explanations — all at once in your score report.</p>
+        </div>
+      </div>
+    </div>
+    <div id="troubleLogPanel"></div>
+  `;
+  populateTroubleLogPanel();
+  renderResumeBar();
+}
+
+function renderResumeBar(){
+  let bar = document.getElementById('resumeBar');
+  if(bar) bar.remove();
+  document.body.classList.remove('hasResumeBar');
+
+  if(!state.testKey || !state.activeFlow) return;
+
+  const list = state.activeFlow === "retest" ? state.retestQuestions : state.flatQuestions;
+  const answersObj = state.activeFlow === "retest" ? state.retestAnswers : state.answers;
+  if(!list || list.length===0) return;
+
+  const answeredCount = Object.keys(answersObj).length;
+  const pct = Math.round((answeredCount/list.length)*100);
+  const label = state.testKey==="FOCUS" ? "Focus Session" : `${state.testKey} — ${state.activeFlow==="retest" ? "Retest" : "Full Test"}`;
+
+  document.body.classList.add('hasResumeBar');
+  const barEl = document.createElement('div');
+  barEl.id = 'resumeBar';
+  barEl.className = 'resumeBar';
+  barEl.innerHTML = `
+    <div class="inner">
+      <div class="info">
+        <div class="title">${label} · in progress</div>
+        <div class="sub">${answeredCount} of ${list.length} answered · ${state.mode==="tutor"?"Tutor":"Test"} Mode</div>
+        <div class="resumeTrack"><div class="resumeFill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="btns">
+        <button class="btnResume" onclick="resumeInProgress()">Resume →</button>
+        <button class="btnRestart" onclick="restartCurrentTest()">Restart</button>
+        <button class="btnDiscard" onclick="discardInProgress()">Discard</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(barEl);
+}
+
+async function populateTroubleLogPanel(){
+  const panel = document.getElementById('troubleLogPanel');
+  if(!panel) return;
+  const log = await loadTroubleLog();
+  const weak = Object.keys(log.tags).filter(t=>{
+    const s = log.tags[t];
+    return s.seen>=2 && (s.wrong/s.seen)>=0.4;
+  }).sort((a,b)=> (log.tags[b].wrong/log.tags[b].seen) - (log.tags[a].wrong/log.tags[a].seen));
+
+  if(weak.length===0){
+    panel.innerHTML = "";
+    return;
+  }
+  panel.innerHTML = `
+    <div class="card troublePanel">
+      <h2 class="section-title">Trouble Log — Carried Over From Past Sessions</h2>
+      <p style="font-size:13px;color:var(--ink-soft);margin-top:-6px;">Tracked automatically across everything you've taken so far, in both modes.</p>
+      ${weak.map(t=>{
+        const s = log.tags[t];
+        const rate = Math.round((s.wrong/s.seen)*100);
+        return `<div class="trouble-tag-row"><span>${t.replace(/-/g,' ')}</span><span class="trouble-rate">${rate}% missed (${s.wrong}/${s.seen})</span></div>`;
+      }).join("")}
+      <div style="margin-top:16px;">
+        <button class="primary" onclick="startFocusSession()">Start Focus Session on These →</button>
+      </div>
+    </div>
+  `;
+}
+
+function startFocusSession(){
+  loadTroubleLog().then(log=>{
+    const weak = Object.keys(log.tags).filter(t=>{
+      const s = log.tags[t];
+      return s.seen>=2 && (s.wrong/s.seen)>=0.4;
+    });
+    const pool = findBackupQuestionsForTags(weak);
+    if(pool.length===0){ return; }
+    state.testKey = "FOCUS";
+    state.mode = "tutor";
+    state.weakTags = weak;
+    state.retestQuestions = pool;
+    state.retestAnswers = {};
+    state.retestIndex = 0;
+    state.retestTutorProgress = {};
+    state.timerPrefsUsed = null;
+    computeAndSetTimer(state.retestQuestions);
+    state.view = "retest";
+    render();
+  });
+}
+
+function startTest(testKey, mode, timerPrefs){
+  state.testKey = testKey;
+  state.mode = mode || "test";
+  state.flatQuestions = buildFreshTest(testKey);
+  state.answers = {};
+  state.currentIndex = 0;
+  state.startedAt = Date.now();
+  state.tutorProgress = {};
+  state.retestQuestions = [];
+  state.retestAnswers = {};
+  state.retestIndex = 0;
+  state.retestTutorProgress = {};
+  state.weakTags = [];
+  state.timerPrefsUsed = (state.mode === "test") ? (timerPrefs || {enabled:false}) : null;
+  computeAndSetTimer(state.flatQuestions);
+  state.view = "test";
+  saveInProgress();
+  render();
+}
+
+function pauseToMenu(){
+  // Leaves everything in memory + persisted — nothing is lost.
+  // This is a deliberate checkpoint, so flush immediately rather than waiting on the debounce.
+  // IMPORTANT: save BEFORE flipping the view — saveInProgress only writes while view is test/retest.
+  if(saveDebounceTimer) clearTimeout(saveDebounceTimer);
+  saveInProgress();
+  state.view = "home";
+  render();
+}
+
+function resumeInProgress(){
+  if(!state.testKey || !state.activeFlow) return;
+  state.view = state.activeFlow;
+  render();
+}
+
+function restartCurrentTest(){
+  if(!confirm("Restart with a fresh set of questions? Your progress on the current attempt will be cleared.")) return;
+  if(state.testKey === "FOCUS"){
+    const pool = findBackupQuestionsForTags(state.weakTags);
+    state.retestQuestions = shuffleArr(pool);
+    state.retestAnswers = {};
+    state.retestIndex = 0;
+    state.retestTutorProgress = {};
+    computeAndSetTimer(state.retestQuestions);
+    state.activeFlow = "retest";
+    state.view = "retest";
+  } else {
+    state.flatQuestions = buildFreshTest(state.testKey);
+    state.answers = {};
+    state.currentIndex = 0;
+    state.tutorProgress = {};
+    computeAndSetTimer(state.flatQuestions);
+    state.activeFlow = "test";
+    state.view = "test";
+  }
+  saveInProgress();
+  render();
+}
+
+function discardInProgress(){
+  if(!confirm("Discard your saved progress? This can't be undone.")) return;
+  clearInProgress();
+  state = {view:"home", testKey:null, mode:"test", activeFlow:null, flatQuestions:[], answers:{}, currentIndex:0, startedAt:null, retestQuestions:[], retestAnswers:{}, retestIndex:0, weakTags:[], tutorProgress:{}, retestTutorProgress:{}, timerEnabled:false, timerTotalSeconds:0, timerSecondsRemaining:0, timerPrefsUsed:null};
+  render();
+}
+
+function getTutorProgress(store, qid){
+  if(!store[qid]) store[qid] = {wrongTried:new Set(), solved:false};
+  return store[qid];
+}
+
+function renderTest(isRetest){
+  const list = isRetest ? state.retestQuestions : state.flatQuestions;
+  const idx = isRetest ? state.retestIndex : state.currentIndex;
+  const answers = isRetest ? state.retestAnswers : state.answers;
+  const tutorStore = isRetest ? state.retestTutorProgress : state.tutorProgress;
+  const q = list[idx];
+  if(!q){ return isRetest ? finishRetest() : finishTest(); }
+
+  const total = list.length;
+  const pct = Math.round(((idx)/total)*100);
+  const isTutor = state.mode === "tutor";
+  const selected = answers[q.id];
+  const prog = isTutor ? getTutorProgress(tutorStore, q.id) : null;
+
+  let passageHtml = "";
+  if(q.passage){
+    passageHtml = `<div class="passage">${q.passage.replace(/\n/g,'<br>')}</div>`;
+  }
+
+  const choicesHtml = q.choices.map((c,i)=>{
+    let cls = "";
+    let locked = false;
+    if(isTutor){
+      if(prog.wrongTried.has(i)){ cls = "incorrect"; locked = true; }
+      if(prog.solved && i===q.answer){ cls = "correct"; }
+      if(prog.solved && i!==q.answer && !prog.wrongTried.has(i)){ locked = true; }
+    } else {
+      if(selected===i) cls = "selected";
+    }
+    const clickAttr = locked ? "" : `onclick="handleChoiceClick('${q.id}', ${i}, ${isRetest})"`;
+    return `<div class="choice ${cls} ${locked?'locked':''}" ${clickAttr}>
+      <div class="bubble ${cls==='selected'||cls==='correct'?'filled':''}"></div>
+      <div><span class="choiceLabel">${String.fromCharCode(65+i)}.</span> ${c}</div>
+    </div>`;
+  }).join("");
+
+  let hintHtml = "";
+  if(isTutor){
+    if(prog.solved){
+      hintHtml = `<div class="hint right">✓ Correct — here's why<div class="body">${q.explain}</div></div>`;
+    } else if(prog.wrongTried.size>0){
+      hintHtml = `<div class="hint wrong">✗ Not quite. Here's the rule that applies<div class="body">${q.explain}</div><div class="body" style="margin-top:6px;font-style:italic;">Try again — pick a different answer.</div></div>`;
+    }
+  }
+
+  const canAdvance = isTutor ? prog.solved : selected!==undefined;
+
+  app.innerHTML = `
+    ${(state.mode==="test" && state.timerEnabled) ? `<div id="timerBadge" class="timerBadge ${state.timerSecondsRemaining<0?'timerOver':(state.timerTotalSeconds>0 && state.timerSecondsRemaining/state.timerTotalSeconds<=0.1?'timerLow':'')}">${state.timerSecondsRemaining<0?'Overtime ':''}${formatClock(state.timerSecondsRemaining)}</div>` : ''}
+    <div class="card">
+      <div class="menuRow">
+        <button class="menuBtn" onclick="pauseToMenu()">← Menu (progress saved)</button>
+        <button class="menuBtn restart" onclick="restartCurrentTest()">⟳ Restart</button>
+      </div>
+      <div class="progressRow">
+        <span>${isRetest ? (state.testKey==="FOCUS" ? "FOCUS SESSION" : "TARGETED RETEST") : q.sectionLabel.toUpperCase()} · Q${idx+1} of ${total}</span>
+        <span class="timer">${state.testKey==="FOCUS" ? "" : state.testKey} ${isTutor ? '<span class="modePill">TUTOR</span>' : '<span class="modePill" style="border-color:var(--ink-soft);color:var(--ink-soft);">TEST</span>'}</span>
+      </div>
+      <div class="progbar"><div class="fill" style="width:${pct}%"></div></div>
+      <span class="qTag">${q.tag}</span>
+      ${passageHtml}
+      <div class="qtext">${parseUnderline(q.prompt)}</div>
+      <div class="choices">${choicesHtml}</div>
+      ${hintHtml}
+      <div class="navRow">
+        <span></span>
+        <button class="primary" onclick="nextQuestion(${isRetest})" ${canAdvance?"":"disabled"}>
+          ${idx+1===total ? "Finish" : "Next"} →
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function handleChoiceClick(qid, choiceIndex, isRetest){
+  if(state.mode === "tutor"){
+    const tutorStore = isRetest ? state.retestTutorProgress : state.tutorProgress;
+    const answers = isRetest ? state.retestAnswers : state.answers;
+    const list = isRetest ? state.retestQuestions : state.flatQuestions;
+    const q = list.find(x=>x.id===qid);
+    const prog = getTutorProgress(tutorStore, qid);
+    if(prog.solved) return;
+    if(choiceIndex === q.answer){
+      prog.solved = true;
+      answers[qid] = choiceIndex;
+    } else {
+      prog.wrongTried.add(choiceIndex);
+    }
+    render();
+  } else {
+    if(isRetest){ state.retestAnswers[qid] = choiceIndex; }
+    else { state.answers[qid] = choiceIndex; }
+    render();
+  }
+}
+
+function nextQuestion(isRetest){
+  if(isRetest){ state.retestIndex++; }
+  else { state.currentIndex++; }
+  render();
+}
+
+function scoreList(list, answers, tutorStore){
+  // In tutor mode, "correct" means solved on the FIRST try (no wrong attempts) —
+  // that's the real diagnostic signal, since tutor mode won't let a wrong final answer stand.
+  let correct = 0;
+  const tagStats = {}; // tag -> {correct, total}
+  const sectionStats = {};
+  list.forEach(q=>{
+    let isCorrect;
+    if(tutorStore){
+      const prog = tutorStore[q.id];
+      isCorrect = prog ? prog.wrongTried.size===0 : (answers[q.id]===q.answer);
+    } else {
+      isCorrect = answers[q.id] === q.answer;
+    }
+    if(isCorrect) correct++;
+    if(!tagStats[q.tag]) tagStats[q.tag] = {correct:0,total:0};
+    tagStats[q.tag].total++;
+    if(isCorrect) tagStats[q.tag].correct++;
+    const sk = q.sectionKey || "General";
+    if(!sectionStats[sk]) sectionStats[sk] = {correct:0,total:0,label:q.sectionLabel||sk};
+    sectionStats[sk].total++;
+    if(isCorrect) sectionStats[sk].correct++;
+  });
+  return {correct, total:list.length, tagStats, sectionStats};
+}
+
+function finishTest(){
+  const {tagStats} = scoreList(state.flatQuestions, state.answers, state.mode==="tutor" ? state.tutorProgress : null);
+  updateTroubleLog(tagStats);
+  clearInProgress();
+  state.activeFlow = null;
+  state.view = "results";
+  render();
+}
+
+function renderResults(){
+  const isTutor = state.mode === "tutor";
+  const {correct, total, tagStats, sectionStats} = scoreList(state.flatQuestions, state.answers, isTutor ? state.tutorProgress : null);
+  const pct = Math.round((correct/total)*100);
+
+  // determine weak tags (below 60% correct, or missed at least one with <2 total questions)
+  const weakTags = Object.keys(tagStats).filter(t=>{
+    const s = tagStats[t];
+    return (s.correct/s.total) < 0.7;
+  });
+  state.weakTags = weakTags;
+
+  const sectionBars = Object.keys(sectionStats).map(sk=>{
+    const s = sectionStats[sk];
+    const p = Math.round((s.correct/s.total)*100);
+    const cls = p<50?"weak":(p<80?"mid":"strong");
+    return `<div class="skillBar">
+      <div class="lbl"><span>${s.label}</span><span>${s.correct}/${s.total}</span></div>
+      <div class="skillTrack"><div class="skillFill ${cls}" style="width:${p}%"></div></div>
+    </div>`;
+  }).join("");
+
+  const tagBars = Object.keys(tagStats).map(tag=>{
+    const s = tagStats[tag];
+    const p = Math.round((s.correct/s.total)*100);
+    const cls = p<50?"weak":(p<80?"mid":"strong");
+    return `<div class="skillBar">
+      <div class="lbl"><span>${tag.replace(/-/g,' ')}</span><span>${s.correct}/${s.total}</span></div>
+      <div class="skillTrack"><div class="skillFill ${cls}" style="width:${p}%"></div></div>
+    </div>`;
+  }).join("");
+
+  // missed questions review
+  const missed = state.flatQuestions.filter(q=>{
+    if(isTutor){
+      const prog = state.tutorProgress[q.id];
+      return prog && prog.wrongTried.size>0;
+    }
+    return state.answers[q.id]!==q.answer;
+  });
+  const missedHtml = missed.map(q=>{
+    let wrongAnswerLine;
+    if(isTutor){
+      const prog = state.tutorProgress[q.id];
+      const wrongLabels = Array.from(prog.wrongTried).map(i=>String.fromCharCode(65+i)+". "+q.choices[i]).join("; ");
+      wrongAnswerLine = `First attempt(s) missed: ${wrongLabels} — got there on a later try.`;
+    } else {
+      const chosen = state.answers[q.id];
+      wrongAnswerLine = `Your answer: ${chosen!==undefined?String.fromCharCode(65+chosen)+". "+q.choices[chosen]:"(skipped)"}`;
+    }
+    return `<div style="margin-bottom:22px;">
+      <span class="qTag">${q.sectionLabel} · ${q.tag}</span>
+      <div class="qtext" style="font-size:14px;">${parseUnderline(q.prompt)}</div>
+      <div style="font-size:13px;color:var(--red);margin-bottom:4px;">${wrongAnswerLine}</div>
+      <div style="font-size:13px;color:var(--green);margin-bottom:8px;">Correct: ${String.fromCharCode(65+q.answer)}. ${q.choices[q.answer]}</div>
+      <div class="explain">${q.explain}</div>
+    </div>`;
+  }).join("");
+
+  const lessonsHtml = weakTags.map(tag=>{
+    const L = LESSONS[tag];
+    if(!L) return "";
+    return `<div class="lesson"><h4>${L.title}</h4><p>${L.body}</p></div>`;
+  }).join("");
+
+  app.innerHTML = `
+    <div class="card">
+      <h2 class="section-title">Score Report — ${TESTS[state.testKey].name}</h2>
+      <div class="scoreRow">
+        <p class="scoreBig">${correct}/${total}</p>
+        <div>
+          <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);">${pct}% correct</div>
+        </div>
+      </div>
+      <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);color:var(--ink-soft);margin-top:22px;">By Section</h3>
+      ${sectionBars}
+      <h3 style="font-size:14px;text-transform:uppercase;letter-spacing:1px;font-family:var(--mono);color:var(--ink-soft);margin-top:22px;">By Skill</h3>
+      ${tagBars}
+    </div>
+
+    ${weakTags.length ? `
+    <div class="card">
+      <h2 class="section-title">Focus Lessons — Your Weak Spots</h2>
+      ${lessonsHtml}
+      <button class="primary" onclick="startRetest()">Start Targeted Retest (${weakTags.length} skill${weakTags.length>1?'s':''}) →</button>
+    </div>` : `
+    <div class="card"><h2 class="section-title">Strong across the board</h2><p style="color:var(--ink-soft);">No skill fell below 70% — nice work. Review the missed questions below if you want to double check anything.</p></div>
+    `}
+
+    ${missed.length ? `
+    <div class="card">
+      <h2 class="section-title">Review — Everything You Missed</h2>
+      ${missedHtml}
+    </div>` : `<div class="card"><h2 class="section-title">Review</h2><p style="color:var(--ink-soft);">You didn't miss a single question. Nothing to review.</p></div>`}
+
+    <div class="card" style="text-align:center;">
+      <button class="ghost" onclick="goHome()">← Back to test menu</button>
+    </div>
+  `;
+}
+
+function startRetest(){
+  // build retest set from backup pool for weak tags, mapped to this test's section keys
+  const testSectionKeys = TESTS[state.testKey].sections.map(s=>s.key);
+  let pool = [];
+  testSectionKeys.forEach(sk=>{
+    const backupForSection = BACKUP[sk];
+    if(!backupForSection) return;
+    state.weakTags.forEach(tag=>{
+      if(backupForSection[tag]){
+        backupForSection[tag].forEach(q=>{
+          pool.push(Object.assign({}, q, {sectionKey:sk, sectionLabel: TESTS[state.testKey].sections.find(s=>s.key===sk).label}));
+        });
+      }
+    });
+  });
+  // de-dupe by id just in case
+  const seen = new Set();
+  pool = pool.filter(q=>{ if(seen.has(q.id)) return false; seen.add(q.id); return true; });
+
+  state.retestQuestions = pool;
+  state.retestAnswers = {};
+  state.retestIndex = 0;
+  state.retestTutorProgress = {};
+  computeAndSetTimer(state.retestQuestions);
+  state.view = "retest";
+  render();
+}
+
+function finishRetest(){
+  const isTutor = state.mode === "tutor";
+  const {tagStats} = scoreList(state.retestQuestions, state.retestAnswers, isTutor ? state.retestTutorProgress : null);
+  updateTroubleLog(tagStats);
+  clearInProgress();
+  state.activeFlow = null;
+  state.view = "retestResults";
+  render();
+}
+
+function renderRetestResults(){
+  const isTutor = state.mode === "tutor";
+  const {correct, total, tagStats} = scoreList(state.retestQuestions, state.retestAnswers, isTutor ? state.retestTutorProgress : null);
+  const pct = total? Math.round((correct/total)*100) : 0;
+
+  const stillWeak = Object.keys(tagStats).filter(t=>(tagStats[t].correct/tagStats[t].total)<0.7);
+  const improved = state.weakTags.filter(t=>!stillWeak.includes(t) && tagStats[t]);
+
+  const tagBars = Object.keys(tagStats).map(tag=>{
+    const s = tagStats[tag];
+    const p = Math.round((s.correct/s.total)*100);
+    const cls = p<50?"weak":(p<80?"mid":"strong");
+    return `<div class="skillBar">
+      <div class="lbl"><span>${tag.replace(/-/g,' ')}</span><span>${s.correct}/${s.total}</span></div>
+      <div class="skillTrack"><div class="skillFill ${cls}" style="width:${p}%"></div></div>
+    </div>`;
+  }).join("");
+
+  app.innerHTML = `
+    <div class="card">
+      <h2 class="section-title">Retest Results</h2>
+      <div class="scoreRow">
+        <p class="scoreBig">${correct}/${total}</p>
+        <div style="font-family:var(--mono);font-size:13px;color:var(--ink-soft);">${pct}% on your weak spots</div>
+      </div>
+      ${tagBars}
+      ${improved.length ? `<p style="color:var(--green);font-size:14px;margin-top:14px;">✓ Improved to solid ground: ${improved.map(t=>t.replace(/-/g,' ')).join(', ')}</p>` : ""}
+      ${stillWeak.length ? `<p style="color:var(--red);font-size:14px;">Still shaky: ${stillWeak.map(t=>t.replace(/-/g,' ')).join(', ')} — worth another look at the lesson above before your next full test.</p>` : `<p style="color:var(--green);font-size:14px;">Everything from your weak-spot list is now solid.</p>`}
+      <div style="margin-top:20px;display:flex;gap:12px;">
+        <button class="ghost" onclick="goHome()">← Back to test menu</button>
+      </div>
+    </div>
+  `;
+}
+
+function goHome(){
+  clearInProgress();
+  state = {view:"home", testKey:null, mode:"test", activeFlow:null, flatQuestions:[], answers:{}, currentIndex:0, startedAt:null, retestQuestions:[], retestAnswers:{}, retestIndex:0, weakTags:[], tutorProgress:{}, retestTutorProgress:{}, timerEnabled:false, timerTotalSeconds:0, timerSecondsRemaining:0, timerPrefsUsed:null};
+  render();
+}
+
+async function init(){
+  const saved = await loadInProgress();
+  if(saved && saved.flatQuestions){
+    state.testKey = saved.testKey;
+    state.mode = saved.mode;
+    state.activeFlow = saved.activeFlow;
+    state.weakTags = saved.weakTags || [];
+    state.flatQuestions = saved.flatQuestions;
+    state.answers = saved.answers || {};
+    state.currentIndex = saved.currentIndex || 0;
+    state.tutorProgress = deserializeTutorStore(saved.tutorProgress);
+    state.retestQuestions = saved.retestQuestions || [];
+    state.retestAnswers = saved.retestAnswers || {};
+    state.retestIndex = saved.retestIndex || 0;
+    state.retestTutorProgress = deserializeTutorStore(saved.retestTutorProgress);
+    state.timerEnabled = saved.timerEnabled || false;
+    state.timerTotalSeconds = saved.timerTotalSeconds || 0;
+    state.timerSecondsRemaining = (typeof saved.timerSecondsRemaining === "number") ? saved.timerSecondsRemaining : 0;
+    state.timerPrefsUsed = saved.timerPrefsUsed || null;
+  }
+  state.view = "home"; // always land on the menu; the resume bar offers the way back in
+  render();
+}
+init();
+</script>
+</body>
+</html>
